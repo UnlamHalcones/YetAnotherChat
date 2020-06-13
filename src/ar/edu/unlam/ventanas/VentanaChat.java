@@ -64,7 +64,7 @@ public class VentanaChat extends JFrame{
 			public void keyPressed(KeyEvent arg0) {
 
 				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-					agregarTextoTextArea(textField.getText() + "\n");
+					agregarTextoTextAreaLocal(textField.getText() + "\n");
 					selectAllTextoTextField(textField);
 				}
 
@@ -93,7 +93,7 @@ public class VentanaChat extends JFrame{
 		btnEnviar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				agregarTextoTextArea(textField.getText() + "\n");
+				agregarTextoTextAreaLocal(textField.getText() + "\n");
 				selectAllTextoTextField(textField);
 			}
 		});
@@ -116,8 +116,8 @@ public class VentanaChat extends JFrame{
 
 	}
 
-	private void agregarTextoTextArea(String texto) {
-		textArea.append("Usuario: "+texto); // ingresar quien escribe el texto
+	private void agregarTextoTextAreaLocal(String texto) {
+		textArea.append(chat.get_usr1()+": "+texto); // ingresar quien escribe el texto
 		textArea.setCaretPosition(textArea.getText().length());
 	}
 

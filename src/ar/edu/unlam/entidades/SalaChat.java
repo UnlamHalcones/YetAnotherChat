@@ -10,7 +10,7 @@ public class SalaChat {
 	private Integer cantUserConectados;
 	
 	private ArrayList<Integer> idUsuariosConectados;
-	private ArrayList<Mensaje> mensajes;
+	
 	
 	public SalaChat (Integer salaID, String nombreSala, Integer usrMax) {
 		
@@ -20,7 +20,7 @@ public class SalaChat {
 		this.cantUserConectados=0;
 		
 		this.idUsuariosConectados= new ArrayList<Integer>();
-		this.mensajes= new ArrayList<Mensaje>();
+		
 		
 	}
 	

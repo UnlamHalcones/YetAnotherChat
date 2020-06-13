@@ -5,18 +5,26 @@ import java.util.ArrayList;
 public class ServidorChatHost {
 	
 	private ArrayList<Usuario> usuarios;
+	private Lobby lobby;
 	
 	
 	public ServidorChatHost (String nombreUsuarioHost) {
 		
 		this.usuarios= new ArrayList<Usuario>();
 		this.usuarios.add(new Usuario(0, nombreUsuarioHost));
+		
+		this.lobby=new Lobby(); // lobby default
 	}
 	
 	public void ingresarUsuario(String nombreUsuario) {
 		
 		usuarios.add(new Usuario(usuarios.get(usuarios.size()-1).getUserID()+1, nombreUsuario));
 		 
+	}
+	
+	public ArrayList<Usuario> getUsuarios(){
+		
+		return (ArrayList<Usuario>) usuarios.clone();
 	}
 }
 

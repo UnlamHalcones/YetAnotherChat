@@ -20,5 +20,10 @@ public class Usuario {
 		return userNickname;
 	}
 	
+	@Override
+	protected Usuario clone() throws CloneNotSupportedException {
+		
+		return new Usuario(this.userID, this.userNickname);
+	}
 	
 }
