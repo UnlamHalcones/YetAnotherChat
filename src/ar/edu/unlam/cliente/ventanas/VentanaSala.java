@@ -1,4 +1,4 @@
-package ar.edu.unlam.ventanas;
+package ar.edu.unlam.cliente.ventanas;
 
 import javax.swing.JFrame;
 

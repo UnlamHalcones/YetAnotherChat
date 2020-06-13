@@ -1,4 +1,4 @@
-package ar.edu.unlam.entidades;
+package ar.edu.unlam.cliente.entidades;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package ar.edu.unlam.entidades;
+package ar.edu.unlam.cliente.entidades;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -6,12 +6,15 @@ import java.util.Map;
 public class Chat {
 	
 	private ArrayList<String> usuarios; //= new ArrayList<String>(2);
+	private ArrayList<Mensaje> mensajes;
 	
 	public Chat (String usr1, String usr2) {
 		
 		this.usuarios= new ArrayList<String>(2);
 		this.usuarios.add(usr1);
 		this.usuarios.add(usr2);
+		
+		this.mensajes= new ArrayList<Mensaje>();
 	}
 	
 	public String get_usr1() {
