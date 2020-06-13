@@ -1,4 +1,4 @@
-package ar.edu.unlam.ventanas;
+package ar.edu.unlam.cliente.ventanas;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -20,7 +20,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import ar.edu.unlam.entidades.*;
+
+import ar.edu.unlam.cliente.entidades.*;
 public class VentanaChat extends JFrame{
 	
 	private Chat chat;
