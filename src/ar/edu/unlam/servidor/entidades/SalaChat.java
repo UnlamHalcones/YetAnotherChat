@@ -23,7 +23,7 @@ public class SalaChat {
 
 	public void agregarUsuarioSala(Usuario usr) {
 		
-		if(cantUserConectados==userMax) {
+		if(cantUserConectados.equals(userMax)) {
 			System.out.println("Ventana de error ...");
 			return;
 		}

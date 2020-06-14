@@ -1,6 +1,8 @@
 package ar.edu.unlam.servidor.threads;
 
+import ar.edu.unlam.cliente.entidades.Mensaje;
 import ar.edu.unlam.servidor.ServidorChat;
+import ar.edu.unlam.servidor.entidades.Usuario;
 
 import java.io.*;
 import java.net.Socket;
@@ -9,64 +11,38 @@ import java.util.Objects;
 public class ThreadUsuario extends Thread {
     private Socket socket;
     private ServidorChat server;
-    private DataOutputStream writer;
+    private ObjectInputStream objectInputStream;
+    private ObjectOutputStream objectOutpuStream;
+    private Usuario usuario;
 
-    public ThreadUsuario(Socket socket, ServidorChat server) {
+    public ThreadUsuario(ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream,
+                         ServidorChat server, Usuario usuario) {
         this.socket = socket;
         this.server = server;
+        this.usuario = usuario;
+        this.objectOutpuStream = objectOutputStream;
+        this.objectInputStream = objectInputStream;
     }
 
     public void run() {
         try {
-            InputStream input = socket.getInputStream();
-            DataInputStream reader = new DataInputStream(input);
-//            BufferedReader reader = new DataInputStream(input);
+            Mensaje clientMessage = (Mensaje) objectInputStream.readObject();
 
-            OutputStream output = socket.getOutputStream();
-            writer = new DataOutputStream(output);
-//            writer = new PrintWriter(output, true);
+            while(!clientMessage.getInformacion().equals("DISCONNECT")) {
+                // Hago un broadcast del mensaje, excluyendo al usuario que lo envia
+                server.broadcast(clientMessage, this);
+                clientMessage = (Mensaje) objectInputStream.readObject();
+            }
 
-            printUsers();
-
-            String userName = reader.readUTF();
-            server.addUserName(userName);
-
-            String serverMessage = "New user connected: " + userName;
-            server.broadcast(serverMessage, this);
-
-            String clientMessage;
-
-            do {
-                clientMessage = reader.readUTF();
-                serverMessage = "[" + userName + "]: " + clientMessage;
-                server.broadcast(serverMessage, this);
-
-            } while (!clientMessage.equals("DISCONNECT"));
-
-            server.removeUser(userName, this);
+            server.removeUser(usuario, this);
             socket.close();
 
-            serverMessage = userName + " has quitted.";
-            server.broadcast(serverMessage, this);
+            String clientDisconnectMessage = usuario.getUserNickname() + " has quitted.";
+            server.broadcast(clientDisconnectMessage, this);
 
-        } catch (IOException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             System.out.println("Error in ThreadUsuario: " + ex.getMessage());
             ex.printStackTrace();
-        }
-    }
-
-    /**
-     * Sends a list of online users to the newly connected user.
-     */
-    void printUsers() {
-        try {
-            if (server.hasUsers()) {
-                writer.writeUTF("Connected users: " + server.getUserNames());
-            } else {
-                writer.writeUTF("No other users connected");
-            }
-        } catch (IOException e) {
-            System.err.println("Error mandando informacion al servidor." + e.getMessage());
         }
     }
 
@@ -75,7 +51,18 @@ public class ThreadUsuario extends Thread {
      */
     public void sendMessage(String message) {
         try {
-            writer.writeUTF(message);
+            objectOutpuStream.writeObject(message);
+        } catch (IOException e) {
+            System.err.println("Error mandando informacion al servidor." + e.getMessage());
+        }
+    }
+
+    /**
+     * Sends a message to the client.
+     */
+    public void sendMessage(Mensaje message) {
+        try {
+            objectOutpuStream.writeObject(message);
         } catch (IOException e) {
             System.err.println("Error mandando informacion al servidor." + e.getMessage());
         }
@@ -88,11 +75,13 @@ public class ThreadUsuario extends Thread {
         ThreadUsuario that = (ThreadUsuario) o;
         return Objects.equals(socket, that.socket) &&
                 Objects.equals(server, that.server) &&
-                Objects.equals(writer, that.writer);
+                Objects.equals(objectInputStream, that.objectInputStream) &&
+                Objects.equals(objectOutpuStream, that.objectOutpuStream) &&
+                Objects.equals(usuario, that.usuario);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(socket, server, writer);
+        return Objects.hash(socket, server, objectInputStream, objectOutpuStream, usuario);
     }
 }

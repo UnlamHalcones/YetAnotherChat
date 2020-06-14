@@ -1,8 +1,10 @@
 package ar.edu.unlam.servidor;
 
+import ar.edu.unlam.cliente.entidades.Mensaje;
+import ar.edu.unlam.servidor.entidades.Usuario;
 import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
@@ -10,34 +12,58 @@ import java.util.Set;
 
 public class ServidorChat {
     private int port;
-    private Set<String> userNames = new HashSet<>();
     private Set<ThreadUsuario> userThreads = new HashSet<>();
-
+    private Set<Usuario> usersInServer = new HashSet<>();
+    private ServerSocket serverSocket;
     public ServidorChat(int port) {
         this.port = port;
     }
 
-    public static void main(String[] args) {
-        ServidorChat servidorChat = new ServidorChat(Integer.valueOf(args[0]));
-        servidorChat.execute();
-    }
-
     public void execute() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try {
+            serverSocket = new ServerSocket(port);
             System.out.println("Chat Server is listening on port " + port);
-            while (true) {
+            while (!serverSocket.isClosed()) {
                 // Acepto conexion
                 Socket socket = serverSocket.accept();
-                System.out.println("New user connected");
 
-                ThreadUsuario threadUsuario = new ThreadUsuario(socket, this);
+                InputStream inputStream = socket.getInputStream();
+                ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+
+                OutputStream outputStream = socket.getOutputStream();
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+
+                // Creacion del usuario que se conecta
+                String userNickName = (String)objectInputStream.readObject();
+                Usuario usuario = new Usuario(usersInServer.size(), userNickName);
+                usersInServer.add(usuario);
+                objectOutputStream.writeObject(usuario);
+                System.out.println("User: " + usuario.getUserNickname() + " connected");
+
+                // Creacion del hilo que va a manejar la comunicacion con el usuario
+                ThreadUsuario threadUsuario = new ThreadUsuario(objectInputStream, objectOutputStream, this, usuario);
                 userThreads.add(threadUsuario);
                 threadUsuario.start();
             }
-        } catch (IOException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
         }
+    }
+
+
+    private Usuario addUserToServer(Socket socket) {
+        Usuario usuario = null;
+        try {
+            InputStream inputStream = socket.getInputStream();
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+            String userNickName = (String)objectInputStream.readObject();
+            usuario = new Usuario(usersInServer.size(), userNickName);
+            usersInServer.add(usuario);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return usuario;
     }
 
     /**
@@ -52,31 +78,46 @@ public class ServidorChat {
     }
 
     /**
-     * Stores username of the newly connected client.
+     * Delivers a message from one user to others (broadcasting)
      */
-    public void addUserName(String userName) {
-        userNames.add(userName);
+    public synchronized void broadcast(Mensaje message, ThreadUsuario excludeUser) {
+        for (ThreadUsuario aUser : userThreads) {
+            if (!aUser.equals(excludeUser)) {
+                aUser.sendMessage(message);
+            }
+        }
     }
 
     /**
      * When a client is disconneted, removes the associated username and ThreadUsuario
      */
-    public void removeUser(String userName, ThreadUsuario aUser) {
-        boolean removed = userNames.remove(userName);
+    public void removeUser(Usuario user, ThreadUsuario aUser) {
+        boolean removed = usersInServer.remove(user);
         if (removed) {
             userThreads.remove(aUser);
-            System.out.println("The user " + userName + " quitted");
+            System.out.println("The user " + user + " quitted");
         }
     }
 
-    public Set<String> getUserNames() {
-        return this.userNames;
+    public void disconnect() {
+        cortarConexionesDeUsuarios();
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Returns true if there are other users connected (not count the currently connected user)
-     */
-    public boolean hasUsers() {
-        return !this.userNames.isEmpty();
+    private void cortarConexionesDeUsuarios() {
+        this.usersInServer = new HashSet<>();
+        this.userThreads.forEach(threadUsuario -> {
+            threadUsuario.sendMessage("DISCONNECT");
+        });
+        this.userThreads = new HashSet<>();
     }
+
+    /*public static void main(String[] args) {
+        ServidorChat servidorChat = new ServidorChat(Integer.valueOf(args[0]));
+        servidorChat.execute();
+    }*/
 }

@@ -1,8 +1,8 @@
 package ar.edu.unlam.cliente.entidades;
 
-import java.util.Date;
+import java.io.Serializable;
 
-public class Mensaje {
+public class Mensaje implements Serializable {
 	
 	private String informacion;
 	private Integer user;
@@ -34,9 +34,10 @@ public class Mensaje {
 		return this.fecha.getHora();
 	}
 
-
-	
-	
+	@Override
+	public String toString() {
+		return "[" + fecha.getFecha() + ":" + user + "] " + informacion;
+	}
 }
 
 	
