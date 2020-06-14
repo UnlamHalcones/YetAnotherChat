@@ -17,10 +17,11 @@ public class ClientePrueba extends Thread {
         InputStream inputStream = socket.getInputStream();
         DataInputStream dataInputStream = new DataInputStream(inputStream);
 
-        Scanner scanner = new Scanner(System.in);
+        
 
         Thread hiloEscritura = new Thread(() -> {
             try {
+            	Scanner scanner = new Scanner(System.in);
                 String str = scanner.nextLine();
                 while (!str.equals("DISCONNECT")) {
 
@@ -31,6 +32,7 @@ public class ClientePrueba extends Thread {
                 dataOutputStream.writeUTF(str);
                 dataInputStream.close();
                 dataOutputStream.close();
+                scanner.close();
                 socket.close();
                 System.exit(0);
                 System.out.println("disconnect from server");
