@@ -7,33 +7,39 @@ public class SalaChat {
 	protected Integer salaId;
 	protected String nombreSala;
 	private Integer userMax;
-	private Integer cantUserConectados;
 
 	private ArrayList<Usuario> usuariosConectados;
 
+	//Constructor para cuando la crea el server
 	public SalaChat(Integer salaID, String nombreSala, Integer usrMax) {
 
 		this.salaId = salaID;
 		this.userMax = usrMax;
 		this.nombreSala = nombreSala;
-		this.cantUserConectados = 0;
 		this.usuariosConectados = new ArrayList<Usuario>();
 
 	}
+	
+	//Constructor para cuando la crea un usuario y no el server
+	public SalaChat(Integer salaID, String nombreSala, Integer usrMax, Usuario user) {
 
-	public void agregarUsuarioSala(Usuario usr) {
-		
-		if(cantUserConectados.equals(userMax)) {
-			System.out.println("Ventana de error ...");
-			return;
-		}
-		
-		this.usuariosConectados.add(usr);
-		incrementarUsuariosConectados();
-		
+		this.salaId = salaID;
+		this.userMax = usrMax;
+		this.nombreSala = nombreSala;
+		this.usuariosConectados = new ArrayList<Usuario>();
+		this.usuariosConectados.add(user);
 	}
-	
-	
+
+	public String agregarUsuarioSala(Usuario usr) {
+
+		if (estaLlena()) {
+			return "La sala esta llena";
+		}
+
+		this.usuariosConectados.add(usr);
+		return "";
+
+	}
 
 	public Integer getSalaId() {
 		return salaId;
@@ -42,13 +48,12 @@ public class SalaChat {
 	public String getNombreSala() {
 		return nombreSala;
 	}
-	
-	public void incrementarUsuariosConectados() {
-		this.cantUserConectados++;
-	}
-	
-	public void decrementarUsuariosConectados() {
-		this.cantUserConectados--;
+
+	public Integer getUsuariosConectados() {
+		return this.usuariosConectados.size();
 	}
 
+	public boolean estaLlena() {
+		return this.getUsuariosConectados() == this.userMax;
+	}
 }
