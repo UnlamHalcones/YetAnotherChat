@@ -1,6 +1,8 @@
 package ar.edu.unlam.servidor;
 
+import ar.edu.unlam.cliente.entidades.Command;
 import ar.edu.unlam.cliente.entidades.Mensaje;
+import ar.edu.unlam.cliente.entidades.CommandType;
 import ar.edu.unlam.servidor.entidades.Usuario;
 import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
@@ -36,8 +38,9 @@ public class ServidorChat {
                 // Creacion del usuario que se conecta
                 String userNickName = (String)objectInputStream.readObject();
                 Usuario usuario = new Usuario(usersInServer.size(), userNickName);
+                Command<Usuario> usuarioCommand = new Command<>(CommandType.USER, usuario);
                 usersInServer.add(usuario);
-                objectOutputStream.writeObject(usuario);
+                objectOutputStream.writeObject(usuarioCommand);
                 System.out.println("User: " + usuario.getUserNickname() + " connected");
 
                 // Creacion del hilo que va a manejar la comunicacion con el usuario

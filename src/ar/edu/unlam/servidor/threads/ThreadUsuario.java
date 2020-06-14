@@ -1,6 +1,8 @@
 package ar.edu.unlam.servidor.threads;
 
+import ar.edu.unlam.cliente.entidades.Command;
 import ar.edu.unlam.cliente.entidades.Mensaje;
+import ar.edu.unlam.cliente.entidades.CommandType;
 import ar.edu.unlam.servidor.ServidorChat;
 import ar.edu.unlam.servidor.entidades.Usuario;
 
@@ -26,12 +28,19 @@ public class ThreadUsuario extends Thread {
 
     public void run() {
         try {
-            Mensaje clientMessage = (Mensaje) objectInputStream.readObject();
+            Command command = (Command) objectInputStream.readObject();
 
-            while(!clientMessage.getInformacion().equals("DISCONNECT")) {
+
+            while(!command.getCommandType().equals(CommandType.DISCONNECT)) {
                 // Hago un broadcast del mensaje, excluyendo al usuario que lo envia
-                server.broadcast(clientMessage, this);
-                clientMessage = (Mensaje) objectInputStream.readObject();
+                // TODO hacer el switch gigante
+                if(command.getCommandType().equals(CommandType.MENSAJE)) {
+                    Mensaje clientMessage = (Mensaje)command.getInfo();
+                    server.broadcast(clientMessage, this);
+                }
+
+
+                command = (Command) objectInputStream.readObject();
             }
 
             server.removeUser(usuario, this);
@@ -62,7 +71,8 @@ public class ThreadUsuario extends Thread {
      */
     public void sendMessage(Mensaje message) {
         try {
-            objectOutpuStream.writeObject(message);
+            Command<Mensaje> mensajeCommand = new Command<>(CommandType.MENSAJE, message);
+            objectOutpuStream.writeObject(mensajeCommand);
         } catch (IOException e) {
             System.err.println("Error mandando informacion al servidor." + e.getMessage());
         }
