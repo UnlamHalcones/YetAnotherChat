@@ -9,13 +9,11 @@ public class Lobby {
 
 	private ArrayList<Usuario> usuarios;
 	private Map<Integer, SalaChat> salas;
-	private Map<Integer, ArrayList<Integer>> usuariosPorSala; // = new HashMap<Integer, String>();
 
 	public Lobby() {
 
 		this.usuarios = new ArrayList<Usuario>();
 		this.salas = new HashMap<Integer, SalaChat>();
-		this.usuariosPorSala = new HashMap<Integer, ArrayList<Integer>>();
 		generadorSalasDefault();
 
 	}
