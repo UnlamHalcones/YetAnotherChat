@@ -38,7 +38,7 @@ public class ServidorChat {
                 // Creacion del usuario que se conecta
                 String userNickName = (String)objectInputStream.readObject();
                 Usuario usuario = new Usuario(usersInServer.size(), userNickName);
-                Command<Usuario> usuarioCommand = new Command<>(CommandType.USER, usuario);
+                Command usuarioCommand = new Command(CommandType.USER, usuario);
                 usersInServer.add(usuario);
                 objectOutputStream.writeObject(usuarioCommand);
                 System.out.println("User: " + usuario.getUserNickname() + " connected");

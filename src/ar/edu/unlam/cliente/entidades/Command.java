@@ -2,12 +2,16 @@ package ar.edu.unlam.cliente.entidades;
 
 import java.io.Serializable;
 
-public class Command<T> implements Serializable {
+public class Command implements Serializable {
 
-    private CommandType commandType;
-    private T info;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -472654729849128580L;
+	private CommandType commandType;
+    private Object info;
 
-    public Command(CommandType commandType, T info) {
+    public Command(CommandType commandType, Object info) {
         this.commandType = commandType;
         this.info = info;
     }
@@ -20,11 +24,11 @@ public class Command<T> implements Serializable {
         this.commandType = commandType;
     }
 
-    public T getInfo() {
+    public Object getInfo() {
         return info;
     }
 
-    public void setInfo(T info) {
+    public void setInfo(Object info) {
         this.info = info;
     }
 }

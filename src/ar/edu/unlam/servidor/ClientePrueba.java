@@ -33,7 +33,7 @@ public class ClientePrueba extends Thread {
                     String str = readerFromKB.nextLine();
                     Mensaje mensaje = new Mensaje(user.getUserID(), user.getUserID(), str);
                     while (!str.equals("DISCONNECT")) {
-                        Command<Mensaje> mensajeCommand = new Command<>(CommandType.MENSAJE, mensaje);
+                        Command mensajeCommand = new Command(CommandType.MENSAJE, mensaje);
                         mensaje = new Mensaje(user.getUserID(), user.getUserID(), str);
                         objectOutputStream.writeObject(mensajeCommand);
                         objectOutputStream.reset();
