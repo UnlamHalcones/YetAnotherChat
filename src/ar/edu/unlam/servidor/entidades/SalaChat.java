@@ -1,6 +1,7 @@
 package ar.edu.unlam.servidor.entidades;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SalaChat {
 
@@ -41,6 +42,37 @@ public class SalaChat {
 
 	}
 
+	public boolean hasUser(Usuario usuario) {
+		return usuariosConectados.contains(usuario);
+	}
+
+	public boolean hasUser(Integer userId) {
+		for(Usuario usuario : usuariosConectados) {
+			if(usuario.getUserID().equals(userId)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Usuario getUserFromSala(Integer userId) {
+		Usuario user = null;
+		for(Usuario usuario : usuariosConectados) {
+			if(usuario.getUserID().equals(userId)) {
+				user = usuario;
+				break;
+			}
+		}
+		return user;
+	}
+
+	public void setUsuariosConectados(ArrayList<Usuario> usuariosConectados) {
+		this.usuariosConectados = usuariosConectados;
+	}
+
+	public List<Usuario> getUsuarios() {
+		return (List<Usuario>)usuariosConectados.clone();
+	}
 	public Integer getSalaId() {
 		return salaId;
 	}
