@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class Mensaje implements Serializable {
 
 	private Integer userId;
-	private CommandType commandType;
 	private Integer userDest;
 	private String informacion;
 	private Integer sala;

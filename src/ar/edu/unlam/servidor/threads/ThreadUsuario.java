@@ -73,7 +73,7 @@ public class ThreadUsuario extends Thread {
 	 */
 	public void sendMessage(Mensaje message) {
 		try {
-			Command<Mensaje> mensajeCommand = new Command<>(CommandType.MENSAJE, message);
+			Command mensajeCommand = new Command(CommandType.MENSAJE, message);
 			objectOutpuStream.writeObject(mensajeCommand);
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());
