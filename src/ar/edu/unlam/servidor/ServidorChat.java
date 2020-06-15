@@ -3,13 +3,18 @@ package ar.edu.unlam.servidor;
 import ar.edu.unlam.cliente.entidades.Command;
 import ar.edu.unlam.cliente.entidades.Mensaje;
 import ar.edu.unlam.cliente.entidades.CommandType;
+import ar.edu.unlam.cliente.entidades.FechaChat;
 import ar.edu.unlam.servidor.entidades.Usuario;
 import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class ServidorChat {
@@ -17,8 +22,10 @@ public class ServidorChat {
     private Set<ThreadUsuario> userThreads = new HashSet<>();
     private Set<Usuario> usersInServer = new HashSet<>();
     private ServerSocket serverSocket;
+    
     public ServidorChat(int port) {
         this.port = port;
+        
     }
 
     public void execute() {
@@ -119,6 +126,7 @@ public class ServidorChat {
         this.userThreads = new HashSet<>();
     }
 
+   
     /*public static void main(String[] args) {
         ServidorChat servidorChat = new ServidorChat(Integer.valueOf(args[0]));
         servidorChat.execute();

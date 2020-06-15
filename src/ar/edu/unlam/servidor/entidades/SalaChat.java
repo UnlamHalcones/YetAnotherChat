@@ -1,6 +1,12 @@
 package ar.edu.unlam.servidor.entidades;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import ar.edu.unlam.cliente.entidades.FechaChat;
 
 public class SalaChat {
 
@@ -9,7 +15,9 @@ public class SalaChat {
 	private Integer userMax;
 
 	private ArrayList<Usuario> usuariosConectados;
-
+	
+	 private Map<Integer, Instant> tiempoUsuarioConectado;
+	    
 	//Constructor para cuando la crea el server
 	public SalaChat(Integer salaID, String nombreSala, Integer usrMax) {
 
@@ -17,6 +25,7 @@ public class SalaChat {
 		this.userMax = usrMax;
 		this.nombreSala = nombreSala;
 		this.usuariosConectados = new ArrayList<Usuario>();
+		this.tiempoUsuarioConectado = new HashMap<Integer, Instant>(); // Hay que borrar al usuario cuando se desconecta
 
 	}
 	
@@ -37,10 +46,23 @@ public class SalaChat {
 		}
 
 		this.usuariosConectados.add(usr);
+		iniciarTiempoConectado(usr.getUserID());
 		return "";
 
 	}
-
+	
+	 private void iniciarTiempoConectado(Integer usrId) {
+		    
+	    	this.tiempoUsuarioConectado.put(usrId, Instant.now());   	
+	    }
+	    
+	    public String getTiempoConectado(Integer userId) {
+	    	
+	    	Duration timeElapsed = 
+	    				Duration.between(tiempoUsuarioConectado.get(userId),Instant.now());
+	    	
+	    	return FechaChat.mostrarTiempoTranscurrido(timeElapsed.getSeconds());
+	    }
 	public Integer getSalaId() {
 		return salaId;
 	}
