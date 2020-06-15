@@ -1,47 +1,66 @@
 package ar.edu.unlam.cliente.ventanas;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+//import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import java.awt.FlowLayout;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
+public class VentanaChat extends JFrame {
 
-import ar.edu.unlam.cliente.entidades.*;
-public class VentanaChat extends JFrame{
-	
-	private Chat chat;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6422904877311999241L;
 	private JPanel contentPane;
 	private JPanel panelMensajeAEnviar;
+	private JPanel usuariosConectados;
+	
+	private JList<String> usuariosActivos;
+	
 	private JTextField textField;
 	private JButton btnEnviar;
 	private JScrollPane scrollPane;
+	private JScrollPane scrollUsuarios;
 	private JTextArea textArea;
+	private JLabel etiqueta;
+
 
 	/**
 	 * Create the frame.
 	 */
 	public VentanaChat() {
 		
-		this.chat = new Chat("Juan", "Roberta");
+		setTitle("Ventana de Chat");
+		setResizable(true);
+		setBounds(100, 100, 450, 300);
 		
-		setTitle("Chat entre "+chat.get_usr1()+" y "+chat.get_usr2());
-		setResizable(false);
-		setBounds(100, 100, 450, 500);
+		String[] usuarios = {"Jorge","Juan","Unknown","Jorge","Juan","Unknown","Jorge","Juan","asd","Unknown","Jorge","Juan","Unknown","Jorge","Juan","Unknown","Jorge","Juan","Unknown","Jorge","Juan","Unknown","Jorge","Juan","Unknown","Jorge","Juan","Unknown","Jorge","Juan","Unknown"};
+		
+		usuariosActivos = new JList<String>(usuarios);
+
 
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -49,24 +68,71 @@ public class VentanaChat extends JFrame{
 				textField.requestFocus();
 			}
 		});
-
+		//Panel general
 		contentPane = new JPanel();
 		contentPane.setBorder(null);
 		contentPane.setLayout(new BorderLayout(1, 1));
 		setContentPane(contentPane);
 
+		//Panel envio de mensajes
 		panelMensajeAEnviar = new JPanel();
 		contentPane.add(panelMensajeAEnviar, BorderLayout.SOUTH);
-		panelMensajeAEnviar.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 10));
+		panelMensajeAEnviar.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
+		
+		
+		//Panel con lista de usuarios conectados
+		etiqueta = new JLabel("Usuarios:");
+		usuariosConectados = new JPanel();
+		contentPane.add(usuariosConectados, BorderLayout.EAST);
+		usuariosConectados.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
+		usuariosConectados.setBorder(null);
+		usuariosConectados.setLayout(new BorderLayout(1, 1));
 
+		usuariosConectados.add(etiqueta, BorderLayout.NORTH);
+		usuariosConectados.add(usuariosActivos,  BorderLayout.SOUTH);
+		
+		
+		usuariosActivos.addMouseListener(new MouseListener() {			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+			}			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub				
+			}			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub				
+			}			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub				
+			}			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				if (e.getClickCount() == 2) {
+	               //abrir ventana chat
+					//JOptionPane.showInputDialog("Aca se abre una ventana de chat");
+	            }
+			}
+		});
+		
 		textField = new JTextField();
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-
-				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-					agregarTextoTextAreaLocal(textField.getText() + "\n");
-					selectAllTextoTextField(textField);
+				DateTimeFormatter fecha = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+				if (!textField.getText().isEmpty() && arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+					textArea.setFont(new Font("Monospaced", Font.PLAIN, 9));
+					agregarTextoTextArea(
+							"	Nickname "/* getUserNickName() */ + fecha.format(LocalDateTime.now()) + "\n");
+					textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
+					agregarTextoTextArea(textField.getText() + "\n");
+					textField.setText("");
+					new VentanaChat();
+					// selectAllTextoTextField(textField);
 				}
 
 			}
@@ -84,8 +150,8 @@ public class VentanaChat extends JFrame{
 
 			}
 		});
-
 		textField.setToolTipText("Escriba su mensaje para enviar");
+		
 		textField.setHorizontalAlignment(SwingConstants.LEFT);
 		textField.setColumns(30);
 		panelMensajeAEnviar.add(textField);
@@ -93,9 +159,17 @@ public class VentanaChat extends JFrame{
 		btnEnviar = new JButton("Enviar");
 		btnEnviar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-				agregarTextoTextAreaLocal(textField.getText() + "\n");
-				selectAllTextoTextField(textField);
+				DateTimeFormatter fecha = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+				if (!textField.getText().isEmpty()) {
+					textArea.setFont(new Font("Monospaced", Font.PLAIN, 9));
+					agregarTextoTextArea(
+							"	Nickname "/* getUserNickName() */ + fecha.format(LocalDateTime.now()) + "\n");
+					textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
+					agregarTextoTextArea(textField.getText() + "\n");
+					textField.setText("");
+					// agregarTextoTextArea(textField.getText() + "\n");
+					// selectAllTextoTextField(textField);
+				}
 			}
 		});
 
@@ -104,21 +178,29 @@ public class VentanaChat extends JFrame{
 
 		scrollPane = new JScrollPane();
 		scrollPane.setEnabled(false);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		contentPane.add(scrollPane, BorderLayout.CENTER);
+		
+		
+		scrollUsuarios = new JScrollPane();
+		scrollUsuarios.setEnabled(false);
+		scrollUsuarios.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		usuariosConectados.add(scrollUsuarios, BorderLayout.CENTER);
+
 
 		textArea = new JTextArea();
-		textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
 		textArea.setEditable(false);
 		scrollPane.setViewportView(textArea);
+		scrollUsuarios.setViewportView(usuariosActivos);
+		
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
 	}
 
-	private void agregarTextoTextAreaLocal(String texto) {
-		textArea.append(chat.get_usr1()+": "+texto); // ingresar quien escribe el texto
+	private void agregarTextoTextArea(String texto) {
+		textArea.append(texto);
 		textArea.setCaretPosition(textArea.getText().length());
 	}
 
@@ -126,6 +208,22 @@ public class VentanaChat extends JFrame{
 		textField.requestFocus();
 		textField.setSelectionStart(0);
 		textField.setSelectionEnd(textField.getText().length());
-		
 	}
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					VentanaChat frame = new VentanaChat();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
 }
