@@ -3,7 +3,6 @@ package ar.edu.unlam.servidor.threads;
 import ar.edu.unlam.cliente.entidades.Command;
 import ar.edu.unlam.cliente.entidades.CommandType;
 import ar.edu.unlam.cliente.entidades.Mensaje;
-import ar.edu.unlam.cliente.entidades.CommandType;
 import ar.edu.unlam.servidor.ServidorChat;
 import ar.edu.unlam.servidor.entidades.SalaChat;
 import ar.edu.unlam.servidor.entidades.Usuario;
@@ -19,7 +18,7 @@ public class ThreadUsuario extends Thread {
 	private ObjectOutputStream objectOutpuStream;
 	private Usuario usuario;
 
-	public ThreadUsuario(ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream,
+	public ThreadUsuario(ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream, Socket socket,
 			ServidorChat server, Usuario usuario) {
 		this.socket = socket;
 		this.server = server;
@@ -39,14 +38,18 @@ public class ThreadUsuario extends Thread {
 				switch (command.getCommandType()) {
 				case MENSAJE:
 					Mensaje clientMessage = (Mensaje) command.getInfo();
-					server.broadcast(clientMessage, this);
+					if(clientMessage.getUserDest() == null) {
+						server.broadcast(clientMessage, this);
+					} else {
+						server.sendMessageTo(clientMessage, clientMessage.getUserDest());
+					}
 					break;
 
 				case CREAR_SALA:
 					SalaChat salaChat = (SalaChat) command.getInfo();
 					String crearSalaResponse = server.lobby.crearSala(salaChat);
 
-					if (crearSalaResponse == "") {
+					if (crearSalaResponse.isEmpty()) {
 						responderSalas();
 					}
 					else {
@@ -56,15 +59,7 @@ public class ThreadUsuario extends Thread {
 					break;
 				case INFO_SALAS:
 					responderSalas();
-				case MENSAJE:
-				        Mensaje clientMessage = (Mensaje) command.getInfo();
-				        if(clientMessage.getUserDest() == null) {
-				            server.broadcast(clientMessage, this);
-				        } else {
-				            server.sendMessageTo(clientMessage, clientMessage.getUserDest());
-				        }
-				        break;
-					
+					break;
 				default:
 					break;
 				}
@@ -120,36 +115,8 @@ public class ThreadUsuario extends Thread {
 		}
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		ThreadUsuario that = (ThreadUsuario) o;
-		return Objects.equals(socket, that.socket) && Objects.equals(server, that.server)
-				&& Objects.equals(objectInputStream, that.objectInputStream)
-				&& Objects.equals(objectOutpuStream, that.objectOutpuStream) && Objects.equals(usuario, that.usuario);
-	}
-
-    /**
-     * Sends a message to the client.
-     */
-    public void sendMessage(Mensaje message) {
-        try {
-            Command mensajeCommand = new Command(CommandType.MENSAJE, message);
-            objectOutpuStream.writeObject(mensajeCommand);
-        } catch (IOException e) {
-            System.err.println("Error mandando informacion al servidor." + e.getMessage());
-        }
-    }
-
-    public Usuario getUsuario() {
+	public Usuario getUsuario() {
         return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
 
     @Override

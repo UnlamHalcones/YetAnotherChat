@@ -3,6 +3,7 @@ package ar.edu.unlam.servidor;
 import ar.edu.unlam.cliente.entidades.Command;
 import ar.edu.unlam.cliente.entidades.Mensaje;
 import ar.edu.unlam.cliente.entidades.CommandType;
+import ar.edu.unlam.servidor.entidades.Lobby;
 import ar.edu.unlam.servidor.entidades.SalaChat;
 import ar.edu.unlam.servidor.entidades.Usuario;
 import ar.edu.unlam.servidor.threads.ThreadUsuario;
@@ -17,8 +18,6 @@ public class ServidorChat {
 
     private int port;
     private Set<ThreadUsuario> userThreads = new HashSet<>();
-    private Set<Usuario> usersInServer = new HashSet<>();
-    private Set<SalaChat> salasInServer = new HashSet<>();
     private ServerSocket serverSocket;
     public Lobby lobby;
     
@@ -43,14 +42,14 @@ public class ServidorChat {
 
                 // Creacion del usuario que se conecta
                 String userNickName = (String)objectInputStream.readObject();
-                Usuario usuario = new Usuario(usersInServer.size(), userNickName);
+                Usuario usuario = this.lobby.ingresarUsuario(userNickName);
                 Command usuarioCommand = new Command(CommandType.USER, usuario);
-                usersInServer.add(usuario);
+
                 objectOutputStream.writeObject(usuarioCommand);
                 System.out.println("User: " + usuario.getUserNickname() + " connected");
 
                 // Creacion del hilo que va a manejar la comunicacion con el usuario
-                ThreadUsuario threadUsuario = new ThreadUsuario(objectInputStream, objectOutputStream, this, usuario);
+                ThreadUsuario threadUsuario = new ThreadUsuario(objectInputStream, objectOutputStream, socket,this, usuario);
                 userThreads.add(threadUsuario);
                 threadUsuario.start();
             }
@@ -58,21 +57,6 @@ public class ServidorChat {
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
         }
-    }
-
-
-    private Usuario addUserToServer(Socket socket) {
-        Usuario usuario = null;
-        try {
-            InputStream inputStream = socket.getInputStream();
-            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-            String userNickName = (String)objectInputStream.readObject();
-            usuario = new Usuario(usersInServer.size(), userNickName);
-            usersInServer.add(usuario);
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return usuario;
     }
 
     /**
@@ -91,7 +75,7 @@ public class ServidorChat {
      */
     public synchronized void broadcast(Mensaje message, ThreadUsuario excludeUser) {
         // Busco la sala desde la que se quiere mandar el mensaje
-        SalaChat sala = this.getSalaWithId(message.getSalaId());
+        SalaChat sala = this.lobby.getSalaWithId(message.getSalaId());
         if(sala == null) {
             sendErrorToUser(message.getUserId(), "No existe la sala.");
             return;
@@ -122,7 +106,7 @@ public class ServidorChat {
      */
     public void sendMessageTo(Mensaje message, Integer userDest) {
         // Busco la sala desde la que se quiere mandar el mensaje
-        SalaChat sala = this.getSalaWithId(message.getSalaId());
+        SalaChat sala = this.lobby.getSalaWithId(message.getSalaId());
         if(sala == null) {
             sendErrorToUser(message.getUserId(), "No existe la sala.");
             return;
@@ -149,22 +133,12 @@ public class ServidorChat {
         });
     }
 
-    private SalaChat getSalaWithId(Integer id) {
-        SalaChat desiredSala = null;
-        for(SalaChat sala : salasInServer) {
-            if(sala.getSalaId().equals(id)) {
-                desiredSala = sala;
-                break;
-            }
-        }
-        return desiredSala;
-    }
-
     /**
      * When a client is disconneted, removes the associated username and ThreadUsuario
      */
     public void removeUser(Usuario user, ThreadUsuario aUser) {
-        boolean removed = usersInServer.remove(user);
+
+        boolean removed = this.lobby.removeUsuario(user);
         if (removed) {
             userThreads.remove(aUser);
             System.out.println("The user " + user + " quitted");
@@ -181,15 +155,10 @@ public class ServidorChat {
     }
 
     private void cortarConexionesDeUsuarios() {
-        this.usersInServer = new HashSet<>();
         this.userThreads.forEach(threadUsuario -> {
             threadUsuario.sendMessage("DISCONNECT");
         });
         this.userThreads = new HashSet<>();
     }
 
-    /*public static void main(String[] args) {
-        ServidorChat servidorChat = new ServidorChat(Integer.valueOf(args[0]));
-        servidorChat.execute();
-    }*/
 }

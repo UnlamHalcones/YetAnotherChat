@@ -31,19 +31,28 @@ public class Lobby {
 
 		// verificar si ya esta conectado a 3 salas el usuario
 		if (user.getCantidadSalasConectadas() >= 3)
-			return "Superó el maximo de salas conectado";
+			return "SuperÃ³ el maximo de salas conectado";
 		
 		this.salas.get(salaId).agregarUsuarioSala(user);
 		
 		return "";
 	}
 
-	public void ingresarUsuario(String nombreUsuario) {
+	public Usuario ingresarUsuario(String nombreUsuario) {
+		Usuario newUser = null;
+		if (!usuarios.isEmpty()) {
+			newUser = new Usuario(usuarios.get(usuarios.size() - 1).getUserID() + 1, nombreUsuario);
+			usuarios.add(newUser);
+		}
+		else {
+			newUser = new Usuario(0, nombreUsuario);
+			usuarios.add(newUser);
+		}
+		return newUser;
+	}
 
-		if (!usuarios.isEmpty())
-			usuarios.add(new Usuario(usuarios.get(usuarios.size() - 1).getUserID() + 1, nombreUsuario));
-		else
-			usuarios.add(new Usuario(0, nombreUsuario));
+	public boolean removeUsuario(Usuario usuario) {
+		return this.usuarios.remove(usuario);
 	}
 
 	public ArrayList<Usuario> getUsuarios() {
@@ -56,7 +65,7 @@ public class Lobby {
 			return "Ya existe una sala con ese nombre";
 		
 		if (sala.creador.getCantidadSalasConectadas() >= 3)
-			return "Superó el maximo de salas conectado";
+			return "SuperÃ³ el maximo de salas conectado";
 		
 		Integer maxKey = Collections.max(salas.keySet()) + 1;
 		
@@ -81,6 +90,11 @@ public class Lobby {
 	
 	public Map<Integer, SalaChat> getSalas(){
 		return salas;
+	}
+
+	public SalaChat getSalaWithId(Integer id) {
+		SalaChat salaChat = salas.get(id);
+		return salaChat;
 	}
 	
 }
