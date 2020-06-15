@@ -24,7 +24,24 @@ public class Lobby {
 		salas.put(1, new SalaChat(1, "Sala 1", 10));
 		salas.put(2, new SalaChat(2, "Sala 2", 10));
 		salas.put(3, new SalaChat(3, "Sala 3", 10));
-
+		salas.put(4, new SalaChat(4, "Sala 4", 10));
+		salas.put(5, new SalaChat(5, "Sala 5", 10));
+		salas.put(6, new SalaChat(6, "Sala 6", 10));
+		
+//		salas.put(7, new SalaChat(7, "Sala 7", 10));
+//		salas.put(8, new SalaChat(8, "Sala 8", 10));
+//		salas.put(9, new SalaChat(9, "Sala 9", 10));
+//		salas.put(10, new SalaChat(10, "Sala 10", 10));
+//		salas.put(11, new SalaChat(11, "Sala 11", 10));
+//		salas.put(12, new SalaChat(12, "Sala 12", 10));
+//		
+//		salas.put(13, new SalaChat(13, "Sala 13", 10));
+//		salas.put(14, new SalaChat(14, "Sala 14", 10));
+//		salas.put(15, new SalaChat(15, "Sala 15", 10));
+//		salas.put(16, new SalaChat(16, "Sala 16", 10));
+//		salas.put(17, new SalaChat(17, "Sala 17", 10));
+//		salas.put(18, new SalaChat(18, "Sala 18", 10));
+		
 	}
 
 	public String agregarUsuarioSala(Usuario user, Integer salaId) {
