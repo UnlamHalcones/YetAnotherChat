@@ -4,6 +4,7 @@ import ar.edu.unlam.cliente.entidades.Command;
 import ar.edu.unlam.cliente.entidades.Mensaje;
 import ar.edu.unlam.cliente.entidades.CommandType;
 import ar.edu.unlam.servidor.ServidorChat;
+import ar.edu.unlam.servidor.entidades.SalaChat;
 import ar.edu.unlam.servidor.entidades.Usuario;
 
 import java.io.*;
@@ -33,11 +34,28 @@ public class ThreadUsuario extends Thread {
 			while (!command.getCommandType().equals(CommandType.DISCONNECT)) {
 				// Hago un broadcast del mensaje, excluyendo al usuario que lo envia
 				// TODO hacer el switch gigante
+				
 				switch (command.getCommandType()) {
 				case MENSAJE:
 					Mensaje clientMessage = (Mensaje) command.getInfo();
 					server.broadcast(clientMessage, this);
 					break;
+
+				case CREAR_SALA:
+					SalaChat salaChat = (SalaChat) command.getInfo();
+					String crearSalaResponse = server.lobby.crearSala(salaChat);
+
+					if (crearSalaResponse == "") {
+						responderSalas();
+					}
+					else {
+						Command errorCommand = new Command(CommandType.ERROR, crearSalaResponse);
+						sendCommand(errorCommand);
+					}
+					break;
+				case INFO_SALAS:
+					responderSalas();
+					
 				default:
 					break;
 				}
@@ -55,6 +73,11 @@ public class ThreadUsuario extends Thread {
 			System.out.println("Error in ThreadUsuario: " + ex.getMessage());
 			ex.printStackTrace();
 		}
+	}
+
+	private void responderSalas() {
+		Command responseCommand = new Command(CommandType.INFO_SALAS, server.lobby.getSalas());
+		server.broadcast(responseCommand, this);
 	}
 
 	/**
@@ -75,6 +98,14 @@ public class ThreadUsuario extends Thread {
 		try {
 			Command mensajeCommand = new Command(CommandType.MENSAJE, message);
 			objectOutpuStream.writeObject(mensajeCommand);
+		} catch (IOException e) {
+			System.err.println("Error mandando informacion al servidor." + e.getMessage());
+		}
+	}
+	
+	public void sendCommand(Command command) {
+		try {
+			objectOutpuStream.writeObject(command);
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());
 		}
