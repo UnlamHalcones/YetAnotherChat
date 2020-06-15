@@ -1,37 +1,49 @@
 package ar.edu.unlam.servidor.entidades;
 
-public class Usuario {
+import java.io.Serializable;
+import java.util.Objects;
 
-	private Integer userID;
-	private String userNickname;
-	private Integer cantidadSalasConectadas;
-	
-	public Usuario(Integer userID ,String nickname) {
-		
-		this.userID=userID;
-		this.userNickname=nickname;
-		this.cantidadSalasConectadas=0;
-		
-	}
+public class Usuario implements Serializable {
 
-	public Integer getUserID() {
-		return userID;
-	}
+    private Integer userID;
+    private String userNickname;
+    private Integer cantidadSalasConectadas;
 
-	public String getUserNickname() {
-		return userNickname;
-	}
-	
-	@Override
-	protected Usuario clone() throws CloneNotSupportedException {
-		
-		return new Usuario(this.userID, this.userNickname);
-	}
+    public Usuario(Integer userID, String nickname) {
+        this.userID = userID;
+        this.userNickname = nickname;
+        this.cantidadSalasConectadas = 0;
+    }
 
-	public Integer getCantidadSalasConectadas() {
-		return cantidadSalasConectadas;
-	}
-	
-	
-	
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public String getUserNickname() {
+        return userNickname;
+    }
+
+    @Override
+    protected Usuario clone() {
+        return new Usuario(this.userID, this.userNickname);
+    }
+
+    public Integer getCantidadSalasConectadas() {
+        return cantidadSalasConectadas;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return Objects.equals(userID, usuario.userID) &&
+                Objects.equals(userNickname, usuario.userNickname) &&
+                Objects.equals(cantidadSalasConectadas, usuario.cantidadSalasConectadas);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userID, userNickname, cantidadSalasConectadas);
+    }
 }

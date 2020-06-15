@@ -1,98 +1,130 @@
 package ar.edu.unlam.servidor.threads;
 
+import ar.edu.unlam.cliente.entidades.Command;
+import ar.edu.unlam.cliente.entidades.Mensaje;
+import ar.edu.unlam.cliente.entidades.CommandType;
 import ar.edu.unlam.servidor.ServidorChat;
+import ar.edu.unlam.servidor.entidades.SalaChat;
+import ar.edu.unlam.servidor.entidades.Usuario;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Objects;
 
 public class ThreadUsuario extends Thread {
-    private Socket socket;
-    private ServidorChat server;
-    private DataOutputStream writer;
+	private Socket socket;
+	private ServidorChat server;
+	private ObjectInputStream objectInputStream;
+	private ObjectOutputStream objectOutpuStream;
+	private Usuario usuario;
 
-    public ThreadUsuario(Socket socket, ServidorChat server) {
-        this.socket = socket;
-        this.server = server;
-    }
+	public ThreadUsuario(ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream,
+			ServidorChat server, Usuario usuario) {
+		this.socket = socket;
+		this.server = server;
+		this.usuario = usuario;
+		this.objectOutpuStream = objectOutputStream;
+		this.objectInputStream = objectInputStream;
+	}
 
-    public void run() {
-        try {
-            InputStream input = socket.getInputStream();
-            DataInputStream reader = new DataInputStream(input);
-//            BufferedReader reader = new DataInputStream(input);
+	public void run() {
+		try {
+			Command command = (Command) objectInputStream.readObject();
 
-            OutputStream output = socket.getOutputStream();
-            writer = new DataOutputStream(output);
-//            writer = new PrintWriter(output, true);
+			while (!command.getCommandType().equals(CommandType.DISCONNECT)) {
+				// Hago un broadcast del mensaje, excluyendo al usuario que lo envia
+				// TODO hacer el switch gigante
+				
+				switch (command.getCommandType()) {
+				case MENSAJE:
+					Mensaje clientMessage = (Mensaje) command.getInfo();
+					server.broadcast(clientMessage, this);
+					break;
 
-            printUsers();
+				case CREAR_SALA:
+					SalaChat salaChat = (SalaChat) command.getInfo();
+					String crearSalaResponse = server.lobby.crearSala(salaChat);
 
-            String userName = reader.readUTF();
-            server.addUserName(userName);
+					if (crearSalaResponse == "") {
+						responderSalas();
+					}
+					else {
+						Command errorCommand = new Command(CommandType.ERROR, crearSalaResponse);
+						sendCommand(errorCommand);
+					}
+					break;
+				case INFO_SALAS:
+					responderSalas();
+					
+				default:
+					break;
+				}
 
-            String serverMessage = "New user connected: " + userName;
-            server.broadcast(serverMessage, this);
+				command = (Command) objectInputStream.readObject();
+			}
 
-            String clientMessage;
+			server.removeUser(usuario, this);
+			socket.close();
 
-            do {
-                clientMessage = reader.readUTF();
-                serverMessage = "[" + userName + "]: " + clientMessage;
-                server.broadcast(serverMessage, this);
+			String clientDisconnectMessage = usuario.getUserNickname() + " has quitted.";
+			server.broadcast(clientDisconnectMessage, this);
 
-            } while (!clientMessage.equals("DISCONNECT"));
+		} catch (IOException | ClassNotFoundException ex) {
+			System.out.println("Error in ThreadUsuario: " + ex.getMessage());
+			ex.printStackTrace();
+		}
+	}
 
-            server.removeUser(userName, this);
-            socket.close();
+	private void responderSalas() {
+		Command responseCommand = new Command(CommandType.INFO_SALAS, server.lobby.getSalas());
+		server.broadcast(responseCommand, this);
+	}
 
-            serverMessage = userName + " has quitted.";
-            server.broadcast(serverMessage, this);
+	/**
+	 * Sends a message to the client.
+	 */
+	public void sendMessage(String message) {
+		try {
+			objectOutpuStream.writeObject(message);
+		} catch (IOException e) {
+			System.err.println("Error mandando informacion al servidor." + e.getMessage());
+		}
+	}
 
-        } catch (IOException ex) {
-            System.out.println("Error in ThreadUsuario: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
+	/**
+	 * Sends a message to the client.
+	 */
+	public void sendMessage(Mensaje message) {
+		try {
+			Command mensajeCommand = new Command(CommandType.MENSAJE, message);
+			objectOutpuStream.writeObject(mensajeCommand);
+		} catch (IOException e) {
+			System.err.println("Error mandando informacion al servidor." + e.getMessage());
+		}
+	}
+	
+	public void sendCommand(Command command) {
+		try {
+			objectOutpuStream.writeObject(command);
+		} catch (IOException e) {
+			System.err.println("Error mandando informacion al servidor." + e.getMessage());
+		}
+	}
 
-    /**
-     * Sends a list of online users to the newly connected user.
-     */
-    void printUsers() {
-        try {
-            if (server.hasUsers()) {
-                writer.writeUTF("Connected users: " + server.getUserNames());
-            } else {
-                writer.writeUTF("No other users connected");
-            }
-        } catch (IOException e) {
-            System.err.println("Error mandando informacion al servidor." + e.getMessage());
-        }
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		ThreadUsuario that = (ThreadUsuario) o;
+		return Objects.equals(socket, that.socket) && Objects.equals(server, that.server)
+				&& Objects.equals(objectInputStream, that.objectInputStream)
+				&& Objects.equals(objectOutpuStream, that.objectOutpuStream) && Objects.equals(usuario, that.usuario);
+	}
 
-    /**
-     * Sends a message to the client.
-     */
-    public void sendMessage(String message) {
-        try {
-            writer.writeUTF(message);
-        } catch (IOException e) {
-            System.err.println("Error mandando informacion al servidor." + e.getMessage());
-        }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ThreadUsuario that = (ThreadUsuario) o;
-        return Objects.equals(socket, that.socket) &&
-                Objects.equals(server, that.server) &&
-                Objects.equals(writer, that.writer);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(socket, server, writer);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(socket, server, objectInputStream, objectOutpuStream, usuario);
+	}
 }
