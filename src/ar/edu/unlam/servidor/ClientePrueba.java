@@ -55,9 +55,11 @@ public class ClientePrueba extends Thread {
                 while (socket.isConnected()) {
                     try {
                         Command command1 = (Command)objectInputStream.readObject();
+                        
                         if(command1.getCommandType().equals(CommandType.DISCONNECT)) {
                             closeConnections(socket, readerFromKB);
                         }
+                        
                         Mensaje serverMessage = (Mensaje)command1.getInfo();
                         System.out.println(serverMessage);
                     } catch (IOException | ClassNotFoundException e) {

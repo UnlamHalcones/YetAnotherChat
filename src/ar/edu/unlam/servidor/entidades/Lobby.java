@@ -50,17 +50,19 @@ public class Lobby {
 		return (ArrayList<Usuario>) usuarios.clone();
 	}
 	
-	public String crearSala(String nombreSala, Integer cantidadUsuarios, Usuario user) {
+	public String crearSala(SalaChat sala) {
 		
-		if (salas.values().stream().filter(s -> s.nombreSala == nombreSala).count() > 0)
+		if (salas.values().stream().filter(s -> s.nombreSala == sala.nombreSala).count() > 0)
 			return "Ya existe una sala con ese nombre";
 		
-		if (user.getCantidadSalasConectadas() >= 3)
+		if (sala.creador.getCantidadSalasConectadas() >= 3)
 			return "Superó el maximo de salas conectado";
 		
 		Integer maxKey = Collections.max(salas.keySet()) + 1;
 		
-		salas.put(maxKey, new SalaChat(maxKey, nombreSala, cantidadUsuarios, user));
+		sala.salaId = maxKey;
+		
+		salas.put(maxKey, sala);
 		
 		return "";
 	}

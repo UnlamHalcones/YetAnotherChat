@@ -20,9 +20,11 @@ public class ServidorChat {
     private Set<Usuario> usersInServer = new HashSet<>();
     private Set<SalaChat> salasInServer = new HashSet<>();
     private ServerSocket serverSocket;
-
+    public Lobby lobby;
+    
     public ServidorChat(int port) {
         this.port = port;
+        this.lobby = new Lobby();
     }
 
     public void execute() {
@@ -103,6 +105,14 @@ public class ServidorChat {
         for (ThreadUsuario userThread : userThreads) {
             if(sala.hasUser(userThread.getUsuario()) && !userThread.equals(excludeUser)) {
                 userThread.sendMessage(message);
+            }
+        }
+    }
+
+    public synchronized void broadcast(Command command, ThreadUsuario excludeUser) {
+        for (ThreadUsuario aUser : userThreads) {
+            if (!aUser.equals(excludeUser)) {
+                aUser.sendCommand(command);
             }
         }
     }
