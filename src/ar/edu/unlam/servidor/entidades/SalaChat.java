@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class SalaChat {
 
 	protected Integer salaId;
+	protected Usuario creador;
 	protected String nombreSala;
 	private Integer userMax;
 
@@ -21,9 +22,7 @@ public class SalaChat {
 	}
 	
 	//Constructor para cuando la crea un usuario y no el server
-	public SalaChat(Integer salaID, String nombreSala, Integer usrMax, Usuario user) {
-
-		this.salaId = salaID;
+	public SalaChat(String nombreSala, Integer usrMax, Usuario user) {
 		this.userMax = usrMax;
 		this.nombreSala = nombreSala;
 		this.usuariosConectados = new ArrayList<Usuario>();

@@ -3,6 +3,7 @@ package ar.edu.unlam.servidor;
 import ar.edu.unlam.cliente.entidades.Command;
 import ar.edu.unlam.cliente.entidades.Mensaje;
 import ar.edu.unlam.cliente.entidades.CommandType;
+import ar.edu.unlam.servidor.entidades.Lobby;
 import ar.edu.unlam.servidor.entidades.Usuario;
 import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
@@ -17,8 +18,11 @@ public class ServidorChat {
     private Set<ThreadUsuario> userThreads = new HashSet<>();
     private Set<Usuario> usersInServer = new HashSet<>();
     private ServerSocket serverSocket;
+    public Lobby lobby;
+    
     public ServidorChat(int port) {
         this.port = port;
+        this.lobby = new Lobby();
     }
 
     public void execute() {
@@ -87,6 +91,14 @@ public class ServidorChat {
         for (ThreadUsuario aUser : userThreads) {
             if (!aUser.equals(excludeUser)) {
                 aUser.sendMessage(message);
+            }
+        }
+    }
+    
+    public synchronized void broadcast(Command command, ThreadUsuario excludeUser) {
+        for (ThreadUsuario aUser : userThreads) {
+            if (!aUser.equals(excludeUser)) {
+                aUser.sendCommand(command);
             }
         }
     }
