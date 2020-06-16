@@ -128,9 +128,7 @@ public class VentanaLobby extends JFrame {
 
 	private int mostrarSalas(int y) {
 		client.getSalas();
-		
 
-		
 		for (Entry<Integer, SalaChat> entry : this.client.lobby.getSalas().entrySet()) {
 			
 			SalaChat sala = entry.getValue();

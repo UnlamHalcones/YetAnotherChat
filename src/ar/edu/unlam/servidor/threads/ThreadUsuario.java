@@ -42,11 +42,13 @@ public class ThreadUsuario extends Thread {
 					break;
 
 				case UNIRSE_SALA:
-					server.getLobby().unirseASala(/*salaId*/1, usuario);
+					Integer unirseSalaId = (Integer)command.getInfo();
+					server.getLobby().unirseASala(unirseSalaId, usuario);
 					break;
-				case SALIR_SALA:
+				case SALIR_SALA:				
+					Integer salirSalaId = (Integer)command.getInfo();
+					server.getLobby().salirDeSala(salirSalaId, usuario);
 					break;
-
 
 				case CREAR_SALA:
 					SalaChat salaChat = (SalaChat) command.getInfo();
