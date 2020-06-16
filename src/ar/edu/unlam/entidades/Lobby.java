@@ -68,6 +68,21 @@ public class Lobby {
 
 		return "";
 	}
+	
+	public String crearSala(String nombreSala, Integer cantidadUsuarios, Usuario user) {
+
+		if (salas.values().stream().filter(s -> s.nombreSala == nombreSala).count() > 0)
+			return "Ya existe una sala con ese nombre";
+
+		if (user.getCantidadSalasConectadas() >= 3)
+			return "Superó el maximo de salas conectado";
+
+		Integer maxKey = Collections.max(salas.keySet()) + 1;
+
+		salas.put(maxKey, new SalaChat(maxKey, nombreSala, cantidadUsuarios, user));
+
+		return "";
+	}
 
 	public String unirseASala(Integer salaId, Usuario user) {
 

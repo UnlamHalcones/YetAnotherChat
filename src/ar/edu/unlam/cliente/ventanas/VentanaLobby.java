@@ -173,7 +173,7 @@ public class VentanaLobby extends JFrame {
 			ventanaCrearSala.setVisible(true);
 			SalaChat nuevaSala = ventanaCrearSala.getSalaChat();
 			if (!nuevaSala.getNombreSala().isEmpty()) {
-				String mensaje = this.lobby.crearSala(nuevaSala.getNombreSala(), nuevaSala.getUsuariosConectados(),
+				String mensaje = this.client.lobby.crearSala(nuevaSala.getNombreSala(), nuevaSala.getUsuariosConectados(),
 						this.usuario);
 				if (mensaje.isEmpty()) {
 					initialize();

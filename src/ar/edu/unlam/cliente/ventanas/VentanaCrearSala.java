@@ -2,7 +2,7 @@ package ar.edu.unlam.cliente.ventanas;
 
 import javax.swing.JFrame;
 
-import ar.edu.unlam.cliente.entidades.SalaChat;
+import ar.edu.unlam.entidades.SalaChat;
 
 public class VentanaCrearSala extends JFrame{
 
