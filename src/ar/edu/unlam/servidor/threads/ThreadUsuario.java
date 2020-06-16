@@ -9,6 +9,8 @@ import ar.edu.unlam.entidades.Usuario;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class ThreadUsuario extends Thread {
@@ -61,6 +63,7 @@ public class ThreadUsuario extends Thread {
 					}
 					break;
 				case INFO_SALAS:
+					System.out.println("Me pidieron salas");
 					responderSalas();
 					
 				default:
@@ -83,8 +86,19 @@ public class ThreadUsuario extends Thread {
 	}
 
 	private void responderSalas() {
-		Command responseCommand = new Command(CommandType.INFO_SALAS, server.lobby.getSalas());
-		server.broadcast(responseCommand, this);
+		
+		Map<Integer, SalaChat> auxSalas = new HashMap<Integer, SalaChat>();
+
+		auxSalas.put(0, new SalaChat(0, "General", 15));
+		auxSalas.put(1, new SalaChat(1, "Sala 1", 10));
+		auxSalas.put(2, new SalaChat(2, "Sala 2", 10));
+		auxSalas.put(3, new SalaChat(3, "Sala 3", 10));
+		auxSalas.put(4, new SalaChat(4, "Sala 4", 10));
+		
+		Command responseCommand = new Command(CommandType.INFO_SALAS, auxSalas);
+		
+		System.out.println("respondo salas");
+		server.broadcast(responseCommand, null);
 	}
 
 	/**

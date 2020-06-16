@@ -52,14 +52,6 @@ public class VentanaLobby extends JFrame {
 
 	public VentanaLobby(Usuario usuario) {
 		super();
-		this.client.lobby = new Lobby();
-		this.usuario = usuario;
-		initialize();
-	}
-
-	public VentanaLobby(Lobby lobby, Usuario usuario) {
-		super();
-		this.client.lobby = lobby;
 		this.usuario = usuario;
 		initialize();
 	}
@@ -128,8 +120,6 @@ public class VentanaLobby extends JFrame {
 
 	private int mostrarSalas(int y) {
 		client.getSalas();
-		
-
 		
 		for (Entry<Integer, SalaChat> entry : this.client.lobby.getSalas().entrySet()) {
 			

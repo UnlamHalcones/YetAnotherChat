@@ -1,10 +1,15 @@
 package ar.edu.unlam.entidades;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class SalaChat {
+public class SalaChat implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8741229406764772785L;
 	protected Integer salaId;
 	protected Usuario creador;
 	protected String nombreSala;

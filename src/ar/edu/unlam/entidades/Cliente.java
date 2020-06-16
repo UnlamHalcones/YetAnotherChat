@@ -36,29 +36,38 @@ public class Cliente extends Thread {
 
             // Levanto un hilo que va a estar recibiendo constantemente los mensaje del server
             Thread hiloLectura = new Thread(() -> {
+            	Command newCommand = command;
                 while (socket.isConnected()) {
                 	
-                    while (!command.getCommandType().equals(CommandType.DISCONNECT)) {
+                    while (!newCommand.getCommandType().equals(CommandType.DISCONNECT)) {
 						// Hago un broadcast del mensaje, excluyendo al usuario que lo envia
 						// TODO hacer el switch gigante
-						
-						switch (command.getCommandType()) {
+						switch (newCommand.getCommandType()) {
 						case MENSAJE:
-							Mensaje clientMessage = (Mensaje) command.getInfo();
+							Mensaje clientMessage = (Mensaje) newCommand.getInfo();
 							
 							break;
 
 						case INFO_SALAS:
-							 Map<Integer, SalaChat> clientSalas = (Map<Integer, SalaChat>) command.getInfo();
+							 Map<Integer, SalaChat> clientSalas = (Map<Integer, SalaChat>) newCommand.getInfo();
 							
-							actualizarSalas(clientSalas);
+							 System.out.println("Recibí respuesta");
+							 actualizarSalas(clientSalas);
 							
 							break;
 						default:
 							break;
 						}
 						
-						//command = (Command) objectInputStream.readObject();
+						try {
+							newCommand = (Command) objectInputStream.readObject();
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
                 }
             });
@@ -76,6 +85,8 @@ public class Cliente extends Thread {
     public void getSalas (){
     	Command getSalasCommand = new Command(CommandType.INFO_SALAS, null);
     	
+    	System.out.println("Voy a pedir salas");
+    	
     	try {
 			objectOutputStream.writeObject(getSalasCommand);
 		} catch (IOException e) {
@@ -86,6 +97,7 @@ public class Cliente extends Thread {
     
     public void actualizarSalas(Map<Integer, SalaChat>  salasChat)
     {
+    	System.out.println("Actualizo salas");
     	lobby.setSalas(salasChat);
     }
     
