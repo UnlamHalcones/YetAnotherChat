@@ -19,10 +19,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
-import ar.edu.unlam.cliente.entidades.Cliente;
-import ar.edu.unlam.cliente.entidades.Lobby;
-import ar.edu.unlam.cliente.entidades.SalaChat;
-import ar.edu.unlam.cliente.entidades.Usuario;
+import ar.edu.unlam.entidades.Cliente;
+import ar.edu.unlam.entidades.Lobby;
+import ar.edu.unlam.entidades.SalaChat;
+import ar.edu.unlam.entidades.Usuario;
 
 public class VentanaLobby extends JFrame {
 

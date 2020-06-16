@@ -1,10 +1,10 @@
 package ar.edu.unlam.servidor;
 
-import ar.edu.unlam.cliente.entidades.Command;
-import ar.edu.unlam.cliente.entidades.Mensaje;
-import ar.edu.unlam.cliente.entidades.CommandType;
-import ar.edu.unlam.servidor.entidades.Lobby;
-import ar.edu.unlam.servidor.entidades.Usuario;
+import ar.edu.unlam.entidades.Command;
+import ar.edu.unlam.entidades.CommandType;
+import ar.edu.unlam.entidades.Mensaje;
+import ar.edu.unlam.entidades.Lobby;
+import ar.edu.unlam.entidades.Usuario;
 import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
 import java.io.*;
@@ -18,7 +18,7 @@ public class ServidorChat {
     private Set<ThreadUsuario> userThreads = new HashSet<>();
     private Set<Usuario> usersInServer = new HashSet<>();
     private ServerSocket serverSocket;
-    private Lobby lobby;
+    public Lobby lobby;
 
     
     public ServidorChat(int port) {

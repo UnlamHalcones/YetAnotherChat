@@ -1,11 +1,11 @@
 package ar.edu.unlam.servidor.threads;
 
-import ar.edu.unlam.cliente.entidades.Command;
-import ar.edu.unlam.cliente.entidades.Mensaje;
-import ar.edu.unlam.cliente.entidades.CommandType;
+import ar.edu.unlam.entidades.Command;
+import ar.edu.unlam.entidades.CommandType;
+import ar.edu.unlam.entidades.Mensaje;
 import ar.edu.unlam.servidor.ServidorChat;
-import ar.edu.unlam.servidor.entidades.SalaChat;
-import ar.edu.unlam.servidor.entidades.Usuario;
+import ar.edu.unlam.entidades.SalaChat;
+import ar.edu.unlam.entidades.Usuario;
 
 import java.io.*;
 import java.net.Socket;

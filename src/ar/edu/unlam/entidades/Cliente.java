@@ -1,4 +1,4 @@
-package ar.edu.unlam.cliente.entidades;
+package ar.edu.unlam.entidades;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +32,7 @@ public class Cliente extends Thread {
 
         if(command.getCommandType().equals(CommandType.USER)) {
             Scanner readerFromKB = new Scanner(System.in);
-            ar.edu.unlam.servidor.entidades.Usuario user = (ar.edu.unlam.servidor.entidades.Usuario)command.getInfo();
+            Usuario user = (Usuario)command.getInfo();
 
             // Levanto un hilo que va a estar recibiendo constantemente los mensaje del server
             Thread hiloLectura = new Thread(() -> {

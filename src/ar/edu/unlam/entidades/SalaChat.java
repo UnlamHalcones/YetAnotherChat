@@ -1,10 +1,12 @@
-package ar.edu.unlam.cliente.entidades;
+package ar.edu.unlam.entidades;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class SalaChat {
 
 	protected Integer salaId;
+	protected Usuario creador;
 	protected String nombreSala;
 	private Integer userMax;
 	private FechaChat fechaCreacion;
@@ -43,6 +45,18 @@ public class SalaChat {
 		return "";
 
 	}
+	
+	public String salirUsuarioSala(Usuario usr) {
+
+		Optional<Usuario> usuario = usuariosConectados.stream().filter(x -> x.getUserID().equals(usr.getUserID())).findFirst();
+		if (usuario.isPresent()) {
+			return "El usuario no se encuentra en la sala";
+		}
+
+		this.usuariosConectados.remove(usr);
+		return "";
+
+	}
 
 	public Integer getSalaId() {
 		return salaId;
@@ -63,4 +77,5 @@ public class SalaChat {
 	public FechaChat getFechaCreacion() {
 		return fechaCreacion;
 	}
+	
 }
