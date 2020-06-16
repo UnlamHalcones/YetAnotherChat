@@ -76,27 +76,12 @@ public class ServidorChat {
     public synchronized void broadcast(Mensaje message, ThreadUsuario excludeUser) {
         // Busco la sala desde la que se quiere mandar el mensaje
         SalaChat sala = this.lobby.getSalaWithId(message.getSalaId());
-        if(sala == null) {
-            sendErrorToUser(message.getUserId(), "No existe la sala.");
-            return;
-        }
-        Usuario userFromSala = sala.getUserFromSala(message.getUserId());
-        if(userFromSala == null) {
-            sendErrorToUser(message.getUserId(), "El usuario no esta en la sala.");
-            return;
-        }
-        // Mando el mensaje a todos los hilos de los usuarios conectados a esa sala
-        for (ThreadUsuario userThread : userThreads) {
-            if(sala.hasUser(userThread.getUsuario()) && !userThread.equals(excludeUser)) {
-                userThread.sendMessage(message);
-            }
-        }
-    }
-
-    public synchronized void broadcast(Command command, ThreadUsuario excludeUser) {
-        for (ThreadUsuario aUser : userThreads) {
-            if (!aUser.equals(excludeUser)) {
-                aUser.sendCommand(command);
+        if (isValid(message, sala)) {
+            // Mando el mensaje a todos los hilos de los usuarios conectados a esa sala
+            for (ThreadUsuario userThread : userThreads) {
+                if(sala.hasUser(userThread.getUsuario()) && !userThread.equals(excludeUser)) {
+                    userThread.sendMessage(message);
+                }
             }
         }
     }
@@ -104,21 +89,35 @@ public class ServidorChat {
     /**
      * Delivers a message from one user to another
      */
-    public void sendMessageTo(Mensaje message, Integer userDest) {
+    public void sendMessageTo(Mensaje message) {
         // Busco la sala desde la que se quiere mandar el mensaje
         SalaChat sala = this.lobby.getSalaWithId(message.getSalaId());
-        if(sala == null) {
+        if (isValid(message, sala)) {
+            for(ThreadUsuario userThread : userThreads) {
+                if(userThread.getUsuario().getUserID().equals(message.getUserDest())) {
+                    userThread.sendMessage(message);
+                }
+            }
+        }
+    }
+
+    private boolean isValid(Mensaje message, SalaChat sala) {
+        if (sala == null) {
             sendErrorToUser(message.getUserId(), "No existe la sala.");
-            return;
+            return false;
         }
         Usuario userFromSala = sala.getUserFromSala(message.getUserId());
-        if(userFromSala == null) {
+        if (userFromSala == null) {
             sendErrorToUser(message.getUserId(), "El usuario no esta en la sala.");
-            return;
+            return false;
         }
-        for(ThreadUsuario userThread : userThreads) {
-            if(userThread.getUsuario().equals(userFromSala)) {
-                userThread.sendMessage(message);
+        return true;
+    }
+
+    public synchronized void broadcast(Command command, ThreadUsuario excludeUser) {
+        for (ThreadUsuario aUser : userThreads) {
+            if (!aUser.equals(excludeUser)) {
+                aUser.sendCommand(command);
             }
         }
     }

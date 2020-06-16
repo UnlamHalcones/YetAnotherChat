@@ -41,7 +41,7 @@ public class ThreadUsuario extends Thread {
 					if(clientMessage.getUserDest() == null) {
 						server.broadcast(clientMessage, this);
 					} else {
-						server.sendMessageTo(clientMessage, clientMessage.getUserDest());
+						server.sendMessageTo(clientMessage);
 					}
 					break;
 
