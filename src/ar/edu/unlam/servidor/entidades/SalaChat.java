@@ -1,6 +1,7 @@
 package ar.edu.unlam.servidor.entidades;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class SalaChat {
 
@@ -37,6 +38,18 @@ public class SalaChat {
 		}
 
 		this.usuariosConectados.add(usr);
+		return "";
+
+	}
+	
+	public String salirUsuarioSala(Usuario usr) {
+
+		Optional<Usuario> usuario = usuariosConectados.stream().filter(x -> x.getUserID().equals(usr.getUserID())).findFirst();
+		if (usuario.isPresent()) {
+			return "El usuario no se encuentra en la sala";
+		}
+
+		this.usuariosConectados.remove(usr);
 		return "";
 
 	}

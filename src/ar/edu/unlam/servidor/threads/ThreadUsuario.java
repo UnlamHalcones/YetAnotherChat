@@ -38,6 +38,11 @@ public class ThreadUsuario extends Thread {
 					Mensaje clientMessage = (Mensaje) command.getInfo();
 					server.broadcast(clientMessage, this);
 					break;
+				case UNIRSE_SALA:
+					server.getLobby().unirseASala(/*salaId*/1, usuario);
+					break;
+				case SALIR_SALA:
+					break;
 				default:
 					break;
 				}

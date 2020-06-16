@@ -3,6 +3,7 @@ package ar.edu.unlam.servidor;
 import ar.edu.unlam.cliente.entidades.Command;
 import ar.edu.unlam.cliente.entidades.Mensaje;
 import ar.edu.unlam.cliente.entidades.CommandType;
+import ar.edu.unlam.servidor.entidades.Lobby;
 import ar.edu.unlam.servidor.entidades.Usuario;
 import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
@@ -17,11 +18,14 @@ public class ServidorChat {
     private Set<ThreadUsuario> userThreads = new HashSet<>();
     private Set<Usuario> usersInServer = new HashSet<>();
     private ServerSocket serverSocket;
+    private Lobby lobby;
+    
     public ServidorChat(int port) {
         this.port = port;
+        this.lobby = new Lobby();
     }
 
-    public void execute() {
+	public void execute() {
         try {
             serverSocket = new ServerSocket(port);
             System.out.println("Chat Server is listening on port " + port);
@@ -119,6 +123,9 @@ public class ServidorChat {
         this.userThreads = new HashSet<>();
     }
 
+    public Lobby getLobby() {
+		return lobby;
+	}
     /*public static void main(String[] args) {
         ServidorChat servidorChat = new ServidorChat(Integer.valueOf(args[0]));
         servidorChat.execute();

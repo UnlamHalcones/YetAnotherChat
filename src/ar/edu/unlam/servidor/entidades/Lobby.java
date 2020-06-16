@@ -77,6 +77,18 @@ public class Lobby {
 		return sala.agregarUsuarioSala(user);
 	}
 	
+public String salirDeSala(Integer salaId, Usuario user) {
+		
+		SalaChat sala = salas.get(salaId);
+		
+		if (sala == null)
+		{
+			return "La sala no existe";
+		}
+		
+		return sala.salirUsuarioSala(user);
+	}
+	
 	public Map<Integer, SalaChat> getSalas(){
 		return salas;
 	}
