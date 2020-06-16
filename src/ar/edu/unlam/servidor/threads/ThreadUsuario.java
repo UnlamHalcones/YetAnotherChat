@@ -40,13 +40,13 @@ public class ThreadUsuario extends Thread {
 					Mensaje clientMessage = (Mensaje) command.getInfo();
 					server.broadcast(clientMessage, this);
 					break;
-<<<<<<< HEAD
+
 				case UNIRSE_SALA:
 					server.getLobby().unirseASala(/*salaId*/1, usuario);
 					break;
 				case SALIR_SALA:
 					break;
-=======
+
 
 				case CREAR_SALA:
 					SalaChat salaChat = (SalaChat) command.getInfo();
@@ -63,7 +63,6 @@ public class ThreadUsuario extends Thread {
 				case INFO_SALAS:
 					responderSalas();
 					
->>>>>>> 22c94bec9e306b0b9bd82e633caa9ce68abc8f95
 				default:
 					break;
 				}

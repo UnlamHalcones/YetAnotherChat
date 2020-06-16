@@ -18,11 +18,8 @@ public class ServidorChat {
     private Set<ThreadUsuario> userThreads = new HashSet<>();
     private Set<Usuario> usersInServer = new HashSet<>();
     private ServerSocket serverSocket;
-<<<<<<< HEAD
     private Lobby lobby;
-=======
-    public Lobby lobby;
->>>>>>> 22c94bec9e306b0b9bd82e633caa9ce68abc8f95
+
     
     public ServidorChat(int port) {
         this.port = port;
