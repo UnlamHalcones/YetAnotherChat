@@ -7,13 +7,13 @@ public class Mensaje implements Serializable {
 	private Integer userId;
 	private Integer userDest;
 	private String informacion;
-	private Integer sala;
+	private Integer salaId;
 	private FechaChat fecha;
 
 	public Mensaje(Integer userID, Integer salaID, String informacion) {
 		
 		this.informacion=informacion;
-		this.sala=salaID;
+		this.salaId =salaID;
 		this.userId =userID;
 		
 		this.fecha= new FechaChat();
@@ -40,8 +40,8 @@ public class Mensaje implements Serializable {
 		this.userId = userId;
 	}
 
-	public void setSala(Integer sala) {
-		this.sala = sala;
+	public void setSalaId(Integer salaId) {
+		this.salaId = salaId;
 	}
 
 	public void setFecha(FechaChat fecha) {
@@ -50,6 +50,18 @@ public class Mensaje implements Serializable {
 	
 	public Integer getUserId() {
 		return userId;
+	}
+	
+	public Integer getUserDest() {
+		return userDest;
+	}
+
+	public void setUserDest(Integer userDest) {
+		this.userDest = userDest;
+	}
+
+	public Integer getSalaId() {
+		return salaId;
 	}
 
 	@Override

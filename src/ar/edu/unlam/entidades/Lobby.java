@@ -32,12 +32,20 @@ public class Lobby {
 		return "";
 	}
 
-	public void ingresarUsuario(String nombreUsuario) {
+	public Usuario ingresarUsuario(String nombreUsuario) {
+		Usuario newUser = null;
+		if (!usuarios.isEmpty()) {
+			newUser = new Usuario(usuarios.get(usuarios.size() - 1).getUserID() + 1, nombreUsuario);
+			usuarios.add(newUser);
+		} else {
+			newUser = new Usuario(0, nombreUsuario);
+			usuarios.add(newUser);
+		}
+		return newUser;
+	}
 
-		if (!usuarios.isEmpty())
-			usuarios.add(new Usuario(usuarios.get(usuarios.size() - 1).getUserID() + 1, nombreUsuario));
-		else
-			usuarios.add(new Usuario(0, nombreUsuario));
+	public boolean removeUsuario(Usuario usuario) {
+		return this.usuarios.remove(usuario);
 	}
 
 	public ArrayList<Usuario> getUsuarios() {
@@ -89,6 +97,11 @@ public class Lobby {
 
 	public void setSalas(Map<Integer, SalaChat> salas) {
 		this.salas = salas;
+	}
+
+	public SalaChat getSalaWithId(Integer id) {
+		SalaChat salaChat = salas.get(id);
+		return salaChat;
 	}
 
 }

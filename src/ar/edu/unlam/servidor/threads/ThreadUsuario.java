@@ -20,7 +20,7 @@ public class ThreadUsuario extends Thread {
 	private ObjectOutputStream objectOutpuStream;
 	private Usuario usuario;
 
-	public ThreadUsuario(ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream,
+	public ThreadUsuario(ObjectInputStream objectInputStream, ObjectOutputStream objectOutputStream, Socket socket,
 			ServidorChat server, Usuario usuario) {
 		this.socket = socket;
 		this.server = server;
@@ -40,7 +40,11 @@ public class ThreadUsuario extends Thread {
 				switch (command.getCommandType()) {
 				case MENSAJE:
 					Mensaje clientMessage = (Mensaje) command.getInfo();
-					server.broadcast(clientMessage, this);
+					if(clientMessage.getUserDest() == null) {
+						server.broadcast(clientMessage, this);
+					} else {
+						server.sendMessageTo(clientMessage);
+					}
 					break;
 
 				case UNIRSE_SALA:
@@ -54,7 +58,7 @@ public class ThreadUsuario extends Thread {
 					SalaChat salaChat = (SalaChat) command.getInfo();
 					String crearSalaResponse = server.lobby.crearSala(salaChat);
 
-					if (crearSalaResponse == "") {
+					if (crearSalaResponse.isEmpty()) {
 						responderSalas();
 					}
 					else {
@@ -65,7 +69,7 @@ public class ThreadUsuario extends Thread {
 				case INFO_SALAS:
 					System.out.println("Me pidieron salas");
 					responderSalas();
-					
+					break;
 				default:
 					break;
 				}
@@ -132,20 +136,24 @@ public class ThreadUsuario extends Thread {
 		}
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		ThreadUsuario that = (ThreadUsuario) o;
-		return Objects.equals(socket, that.socket) && Objects.equals(server, that.server)
-				&& Objects.equals(objectInputStream, that.objectInputStream)
-				&& Objects.equals(objectOutpuStream, that.objectOutpuStream) && Objects.equals(usuario, that.usuario);
-	}
+	public Usuario getUsuario() {
+        return usuario;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(socket, server, objectInputStream, objectOutpuStream, usuario);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        ThreadUsuario that = (ThreadUsuario) o;
+        return Objects.equals(socket, that.socket) && Objects.equals(server, that.server)
+                && Objects.equals(objectInputStream, that.objectInputStream)
+                && Objects.equals(objectOutpuStream, that.objectOutpuStream) && Objects.equals(usuario, that.usuario);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(socket, server, objectInputStream, objectOutpuStream, usuario);
+    }
 }

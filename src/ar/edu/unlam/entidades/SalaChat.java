@@ -99,4 +99,28 @@ public class SalaChat implements Serializable{
 		return fechaCreacion;
 	}
 	
+	public Usuario getUserFromSala(Integer userId) {
+		Usuario user = null;
+		for(Usuario usuario : usuariosConectados) {
+			if(usuario.getUserID().equals(userId)) {
+				user = usuario;
+				break;
+			}
+		}
+		return user;
+	}
+	
+	public boolean hasUser(Usuario usuario) {
+		return usuariosConectados.contains(usuario);
+	}
+
+	public boolean hasUser(Integer userId) {
+		for(Usuario usuario : usuariosConectados) {
+			if(usuario.getUserID().equals(userId)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
