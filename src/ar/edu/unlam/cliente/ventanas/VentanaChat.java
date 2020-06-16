@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
-import ar.edu.unlam.cliente.entidades.*;
+import ar.edu.unlam.entidades.*;
 public class VentanaChat extends JFrame{
 	
 	private Chat chat;

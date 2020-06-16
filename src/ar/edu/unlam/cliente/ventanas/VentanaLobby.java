@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Map.Entry;
 
 import javax.swing.ImageIcon;
@@ -20,9 +21,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
-import ar.edu.unlam.cliente.entidades.Lobby;
-import ar.edu.unlam.cliente.entidades.SalaChat;
-import ar.edu.unlam.cliente.entidades.Usuario;
+import ar.edu.unlam.entidades.Cliente;
+import ar.edu.unlam.entidades.Lobby;
+import ar.edu.unlam.entidades.SalaChat;
+import ar.edu.unlam.entidades.Usuario;
 
 public class VentanaLobby extends JFrame {
 
@@ -33,12 +35,33 @@ public class VentanaLobby extends JFrame {
 	private JLabel etiqueta;
 	private JList<JButton> lista;
 	private Usuario usuario;
-	private Lobby lobby;
+	private Cliente client;
+
+	public VentanaLobby() {
+		super();
+		try {
+			this.client = new Cliente("localhost", 9091, "Fifer");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		initialize();
+	}
 
 	public VentanaLobby(Usuario usuario) {
 		super();
-		this.lobby = new Lobby();
 		this.usuario = usuario;
+		
+		try {
+			this.client = new Cliente("localhost", 9091, usuario.getUserNickname());
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.panel = new JPanel();
 		this.scrollPane = new JScrollPane();
 		this.etiqueta = new JLabel();
@@ -49,7 +72,14 @@ public class VentanaLobby extends JFrame {
 
 	public VentanaLobby(Lobby lobby, Usuario usuario) {
 		super();
-		this.lobby = lobby;
+		
+		try {
+			this.client = new Cliente("localhost", 9091, usuario.getUserNickname());
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.client.lobby = lobby;
 		this.usuario = usuario;
 		this.panel = new JPanel();
 		this.scrollPane = new JScrollPane();
@@ -75,9 +105,12 @@ public class VentanaLobby extends JFrame {
 		this.lista.setLayoutOrientation(JList.VERTICAL);
 
 		int y = 10;
-
-		for (Entry<Integer, SalaChat> entry : this.lobby.getSalas().entrySet()) {
+		
+		for (Entry<Integer, SalaChat> entry : this.client.lobby.getSalas().entrySet()) {
+			
 			SalaChat sala = entry.getValue();
+			System.out.println("pasando por la sala " + sala.getSalaId());
+			
 			JButton btnSala = new JButton();
 			btnSala.setActionCommand(entry.getKey().toString());
 			btnSala.setText("Sala <" + sala.getNombreSala() + "> [" + sala.getFechaCreacion().getFecha() + " "
@@ -140,7 +173,7 @@ public class VentanaLobby extends JFrame {
 			ventanaCrearSala.setVisible(true);
 			SalaChat nuevaSala = ventanaCrearSala.getSalaChat();
 			if (!nuevaSala.getNombreSala().isEmpty()) {
-				String mensaje = this.lobby.crearSala(nuevaSala.getNombreSala(), nuevaSala.getUsuariosConectados(),
+				String mensaje = this.client.lobby.crearSala(nuevaSala.getNombreSala(), nuevaSala.getUsuariosConectados(),
 						this.usuario);
 				if (mensaje.isEmpty()) {
 					initialize();
@@ -151,11 +184,17 @@ public class VentanaLobby extends JFrame {
 			}
 		}
 	}
+	
+	private void crearSala(int idUsuario, VentanaCrearSala otraSala) {
+		// Aca va el codigo para crear la sala
+		
+
+	}
 
 	private void unirseAUnaSala(int idSala) {
 		if (JOptionPane.showConfirmDialog(this, "Desea unirse a la sala", "Confirmar...", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE) == 0) {
-			String mensaje = this.lobby.unirseASala(idSala, this.usuario);
+			String mensaje = this.client.lobby.unirseASala(idSala, this.usuario);
 			if (mensaje.isEmpty()) {
 				new VentanaChat().setVisible(true);
 			} else {

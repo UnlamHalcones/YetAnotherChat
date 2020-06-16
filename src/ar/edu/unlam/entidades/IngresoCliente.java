@@ -1,4 +1,4 @@
-package ar.edu.unlam.cliente.entidades;
+package ar.edu.unlam.entidades;
 
 import javax.swing.JFrame;
 

@@ -1,4 +1,4 @@
-package ar.edu.unlam.cliente.entidades;
+package ar.edu.unlam.entidades;
 
 public enum CommandType {
     CREAR_SALA,
@@ -8,5 +8,6 @@ public enum CommandType {
     MENSAJE,
     ERROR,
     DISCONNECT,
-    USER;
+    USER,
+    LOGIN;
 }
