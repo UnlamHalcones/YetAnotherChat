@@ -1,4 +1,4 @@
-package ar.edu.unlam.servidor.entidades;
+package ar.edu.unlam.cliente.entidades;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +10,8 @@ public class Lobby {
 	private ArrayList<Usuario> usuarios;
 	private Map<Integer, SalaChat> salas;
 
+	
+
 	public Lobby() {
 
 		this.usuarios = new ArrayList<Usuario>();
@@ -19,10 +21,6 @@ public class Lobby {
 	}
 
 	private void generadorSalasDefault() {
-		salas.put(0, new SalaChat(0, "General", 15));
-		salas.put(1, new SalaChat(1, "Sala 1", 10));
-		salas.put(2, new SalaChat(2, "Sala 2", 10));
-		salas.put(3, new SalaChat(3, "Sala 3", 10));
 
 	}
 
@@ -31,9 +29,9 @@ public class Lobby {
 		// verificar si ya esta conectado a 3 salas el usuario
 		if (user.getCantidadSalasConectadas() >= 3)
 			return "Superó el maximo de salas conectado";
-		
+
 		this.salas.get(salaId).agregarUsuarioSala(user);
-		
+
 		return "";
 	}
 
@@ -48,50 +46,39 @@ public class Lobby {
 	public ArrayList<Usuario> getUsuarios() {
 		return (ArrayList<Usuario>) usuarios.clone();
 	}
-	
-	public String crearSala(SalaChat sala) {
-		
-		if (salas.values().stream().filter(s -> s.nombreSala == sala.nombreSala).count() > 0)
+
+	public String crearSala(String nombreSala, Integer cantidadUsuarios, Usuario user) {
+
+		if (salas.values().stream().filter(s -> s.nombreSala == nombreSala).count() > 0)
 			return "Ya existe una sala con ese nombre";
-		
-		if (sala.creador.getCantidadSalasConectadas() >= 3)
+
+		if (user.getCantidadSalasConectadas() >= 3)
 			return "Superó el maximo de salas conectado";
-		
+
 		Integer maxKey = Collections.max(salas.keySet()) + 1;
-		
-		sala.salaId = maxKey;
-		
-		salas.put(maxKey, sala);
-		
+
+		salas.put(maxKey, new SalaChat(maxKey, nombreSala, cantidadUsuarios, user));
+
 		return "";
 	}
-	
+
 	public String unirseASala(Integer salaId, Usuario user) {
-		
+
 		SalaChat sala = salas.get(salaId);
-		
-		if (sala == null)
-		{
+
+		if (sala == null) {
 			return "La sala no existe";
 		}
-		
+
 		return sala.agregarUsuarioSala(user);
 	}
-	
-public String salirDeSala(Integer salaId, Usuario user) {
-		
-		SalaChat sala = salas.get(salaId);
-		
-		if (sala == null)
-		{
-			return "La sala no existe";
-		}
-		
-		return sala.salirUsuarioSala(user);
-	}
-	
-	public Map<Integer, SalaChat> getSalas(){
+
+	public Map<Integer, SalaChat> getSalas() {
 		return salas;
 	}
-	
+
+	public void setSalas(Map<Integer, SalaChat> salas) {
+		this.salas = salas;
+	}
+
 }
