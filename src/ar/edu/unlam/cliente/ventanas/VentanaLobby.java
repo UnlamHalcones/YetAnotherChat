@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Map.Entry;
 
 import javax.swing.ImageIcon;
@@ -18,6 +19,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
+import ar.edu.unlam.cliente.entidades.Cliente;
 import ar.edu.unlam.cliente.entidades.Lobby;
 import ar.edu.unlam.cliente.entidades.SalaChat;
 import ar.edu.unlam.cliente.entidades.Usuario;
@@ -31,24 +33,33 @@ public class VentanaLobby extends JFrame {
 	private JLabel etiqueta;
 	private JList<JButton> lista;
 	private Usuario usuario;
-	private Lobby lobby;
+	private Cliente client;
 
 	public VentanaLobby() {
 		super();
-		this.lobby = new Lobby();
+		try {
+			this.client = new Cliente("localhost", 9091, "Fifer");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		initialize();
 	}
 
 	public VentanaLobby(Usuario usuario) {
 		super();
-		this.lobby = new Lobby();
+		this.client.lobby = new Lobby();
 		this.usuario = usuario;
 		initialize();
 	}
 
 	public VentanaLobby(Lobby lobby, Usuario usuario) {
 		super();
-		this.lobby = lobby;
+		this.client.lobby = lobby;
 		this.usuario = usuario;
 		initialize();
 	}
@@ -72,26 +83,7 @@ public class VentanaLobby extends JFrame {
 
 		int y = 10;
 
-		for (Entry<Integer, SalaChat> entry : this.lobby.getSalas().entrySet()) {
-			SalaChat sala = entry.getValue();
-			JButton btnSala = new JButton();
-			btnSala.setActionCommand(entry.getKey().toString());
-			btnSala.setText("Sala <" + sala.getNombreSala() + "> [" + sala.getFechaCreacion().getFecha() + " "
-					+ sala.getFechaCreacion().getHora() + "]");
-			btnSala.setHorizontalAlignment(SwingConstants.CENTER);
-			btnSala.setVerticalAlignment(SwingConstants.CENTER);
-			btnSala.setHorizontalTextPosition(SwingConstants.RIGHT);
-			btnSala.setVerticalTextPosition(SwingConstants.CENTER);
-			btnSala.setBounds(10, y, 280, 30);
-			btnSala.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					unirseAUnaSala(Integer.parseInt(e.getActionCommand().toString()));
-				}
-			});
-			lista.add(btnSala);
-			y += 35;
-		}
+		y = mostrarSalas(y);
 
 		JButton btnCrearSala = new JButton();
 		btnCrearSala.setActionCommand("-1");
@@ -134,12 +126,45 @@ public class VentanaLobby extends JFrame {
 		this.setLocationRelativeTo(null);
 	}
 
+	private int mostrarSalas(int y) {
+		client.getSalas();
+		
+
+		
+		for (Entry<Integer, SalaChat> entry : this.client.lobby.getSalas().entrySet()) {
+			
+			SalaChat sala = entry.getValue();
+			System.out.println("pasando por la sala " + sala.getSalaId());
+			
+			JButton btnSala = new JButton();
+			btnSala.setActionCommand(entry.getKey().toString());
+			btnSala.setText("Sala <" + sala.getNombreSala() + "> [" + sala.getFechaCreacion().getFecha() + " "
+					+ sala.getFechaCreacion().getHora() + "]");
+			btnSala.setHorizontalAlignment(SwingConstants.CENTER);
+			btnSala.setVerticalAlignment(SwingConstants.CENTER);
+			btnSala.setHorizontalTextPosition(SwingConstants.RIGHT);
+			btnSala.setVerticalTextPosition(SwingConstants.CENTER);
+			btnSala.setBounds(10, y, 280, 30);
+			btnSala.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					unirseAUnaSala(Integer.parseInt(e.getActionCommand().toString()));
+				}
+			});
+			lista.add(btnSala);
+			y += 35;
+		}
+		return y;
+	}
+
 	private void crearSala(int idUsuario, VentanaCrearSala otraSala) {
 		// Aca va el codigo para crear la sala
+		
+		mostrarSalas(11);
 	}
 
 	private void unirseAUnaSala(int idSala) {
-		if (this.lobby.unirseASala(idSala, this.usuario).isEmpty()) {
+		if (this.client.lobby.unirseASala(idSala, this.usuario).isEmpty()) {
 			new VentanaChat().setVisible(true);
 		}
 	}

@@ -10,6 +10,8 @@ public class Lobby {
 	private ArrayList<Usuario> usuarios;
 	private Map<Integer, SalaChat> salas;
 
+	
+
 	public Lobby() {
 
 		this.usuarios = new ArrayList<Usuario>();
@@ -19,11 +21,6 @@ public class Lobby {
 	}
 
 	private void generadorSalasDefault() {
-
-		salas.put(0, new SalaChat(0, "General", 15));
-		salas.put(1, new SalaChat(1, "Sala 1", 10));
-		salas.put(2, new SalaChat(2, "Sala 2", 10));
-		salas.put(3, new SalaChat(3, "Sala 3", 10));
 
 	}
 
@@ -78,6 +75,10 @@ public class Lobby {
 
 	public Map<Integer, SalaChat> getSalas() {
 		return salas;
+	}
+
+	public void setSalas(Map<Integer, SalaChat> salas) {
+		this.salas = salas;
 	}
 
 }

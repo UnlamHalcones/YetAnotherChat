@@ -8,5 +8,6 @@ public enum CommandType {
     MENSAJE,
     ERROR,
     DISCONNECT,
-    USER;
+    USER,
+    LOGIN;
 }

@@ -19,7 +19,6 @@ public class Lobby {
 	}
 
 	private void generadorSalasDefault() {
-
 		salas.put(0, new SalaChat(0, "General", 15));
 		salas.put(1, new SalaChat(1, "Sala 1", 10));
 		salas.put(2, new SalaChat(2, "Sala 2", 10));
