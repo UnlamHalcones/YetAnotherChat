@@ -47,6 +47,10 @@ public class Mensaje implements Serializable {
 	public void setFecha(FechaChat fecha) {
 		this.fecha = fecha;
 	}
+	
+	public Integer getUserId() {
+		return userId;
+	}
 
 	@Override
 	public String toString() {

@@ -16,6 +16,7 @@ public class SalaChat implements Serializable{
 	private Integer userMax;
 	private FechaChat fechaCreacion;
 	private ArrayList<Usuario> usuariosConectados;
+	private ArrayList<Mensaje> mensajes;
 
 	// Constructor para cuando la crea el server
 	public SalaChat(Integer salaID, String nombreSala, Integer usrMax) {
@@ -25,7 +26,7 @@ public class SalaChat implements Serializable{
 		this.nombreSala = nombreSala;
 		this.usuariosConectados = new ArrayList<Usuario>();
 		this.fechaCreacion = new FechaChat();
-		
+		this.mensajes= new ArrayList<Mensaje>();
 	}
 
 	// Constructor para cuando la crea un usuario y no el server
@@ -61,6 +62,21 @@ public class SalaChat implements Serializable{
 		this.usuariosConectados.remove(usr);
 		return "";
 
+	}
+	
+	public String armarLogMensajes() {
+		
+		String logMensajes="";
+		
+		for(int i=0; i<mensajes.size();i++) {
+			
+			Mensaje mensaje = mensajes.get(i);
+			
+			logMensajes+="Usuario: "+mensaje.getUserId()+" "+mensaje.getInformacion()+" "+mensaje.getHora()+" "+mensaje.getFecha()+"\n";
+
+		}
+		
+		return logMensajes;
 	}
 
 	public Integer getSalaId() {
