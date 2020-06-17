@@ -36,7 +36,7 @@ public class ThreadUsuario extends Thread {
 			while (!command.getCommandType().equals(CommandType.DISCONNECT)) {
 				// Hago un broadcast del mensaje, excluyendo al usuario que lo envia
 				// TODO hacer el switch gigante
-				
+				server.procesarComando(command, this);
 				switch (command.getCommandType()) {
 				case MENSAJE:
 					Mensaje clientMessage = (Mensaje) command.getInfo();

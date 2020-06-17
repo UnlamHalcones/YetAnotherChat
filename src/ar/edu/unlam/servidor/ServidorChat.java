@@ -6,16 +6,13 @@ import ar.edu.unlam.entidades.Mensaje;
 import ar.edu.unlam.entidades.SalaChat;
 import ar.edu.unlam.entidades.Lobby;
 import ar.edu.unlam.entidades.Usuario;
+import ar.edu.unlam.servidor.cor.*;
 import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class ServidorChat {
@@ -24,11 +21,21 @@ public class ServidorChat {
     private Set<ThreadUsuario> userThreads = new HashSet<>();
     private ServerSocket serverSocket;
     public Lobby lobby;
-
+    private Procesable procesarComando;
     
     public ServidorChat(int port) {
         this.port = port;
         this.lobby = new Lobby();
+
+        procesarComando = new ProcesarMensaje(this);
+        Procesable procesaUniserASala = new ProcesarUnirseASala(this);
+        Procesable procesarInfoSalas = new ProcesarInfoSalas(this);
+        Procesable procesarCrearSalas = new ProcesarCrearSala(this);
+
+        procesarComando.establecerSiguiente(procesaUniserASala);
+        procesaUniserASala.establecerSiguiente(procesarInfoSalas);
+        procesarInfoSalas.establecerSiguiente(procesarCrearSalas);
+        procesarCrearSalas.establecerSiguiente(new Default(this));
     }
 
 	public void execute() {
@@ -165,6 +172,9 @@ public class ServidorChat {
         this.userThreads = new HashSet<>();
     }
 
+    public void procesarComando(Command command, ThreadUsuario threadUsuario) {
+        this.procesarComando.procesar(command, threadUsuario);
+    }
     public Lobby getLobby() {
 		return lobby;
 	}
