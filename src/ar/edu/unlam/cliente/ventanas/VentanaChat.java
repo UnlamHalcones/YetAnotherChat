@@ -90,9 +90,9 @@ public class VentanaChat extends JFrame {
 		etiqueta = new JLabel("Usuarios:");
 		usuariosConectados = new JPanel();
 		contentPane.add(usuariosConectados, BorderLayout.EAST);
-		usuariosConectados.setLayout(new FlowLayout(FlowLayout.RIGHT, 50, 50));
+		usuariosConectados.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 50));
 		usuariosConectados.setBorder(null);
-		usuariosConectados.setLayout(new BorderLayout(1, 1));
+		usuariosConectados.setLayout(new BorderLayout(1, 10));
 
 		usuariosConectados.add(etiqueta, BorderLayout.NORTH);
 		usuariosConectados.add(usuariosActivos, BorderLayout.SOUTH);
@@ -102,28 +102,25 @@ public class VentanaChat extends JFrame {
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
 			}
-
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
 			}
-
 			@Override
 			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
 			}
-
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
 			}
-
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 				if (e.getClickCount() == 2) {
 					// abrir ventana chat
-					// JOptionPane.showInputDialog("Aca se abre una ventana de chat");
+					
+					//JOptionPane.showInputDialog("Aca se abre una ventana de chat");
 				}
 			}
 		});
@@ -137,12 +134,10 @@ public class VentanaChat extends JFrame {
 				if (!textField.getText().isEmpty() && arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 					textArea.setFont(new Font("Monospaced", Font.PLAIN, 9));
 					agregarTextoTextArea(
-							"	Nickname " /* getUserNickName() */ + fecha.format(LocalDateTime.now()) + "\n");
+							"  @Nickname " /* getUserNickName() */ + fecha.format(LocalDateTime.now()) + "\n");
 					textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
 					agregarTextoTextArea(textField.getText() + "\n");
 					textField.setText("");
-					new VentanaChat(); //
-					selectAllTextoTextField(textField);
 				}
 
 			}
@@ -179,12 +174,10 @@ public class VentanaChat extends JFrame {
 				if (!textField.getText().isEmpty()) {
 					textArea.setFont(new Font("Monospaced", Font.PLAIN, 9));
 					agregarTextoTextArea(
-							"	Nickname " /* getUserNickName() */ + fecha.format(LocalDateTime.now()) + "\n");
+							"  @Nickname " /* getUserNickName() */ + fecha.format(LocalDateTime.now()) + "\n");
 					textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
 					agregarTextoTextArea(textField.getText() + "\n");
 					textField.setText("");
-					// agregarTextoTextArea(textField.getText() +"\n");
-					// selectAllTextoTextField(textField);
 				}
 			}
 		});
@@ -227,12 +220,12 @@ public class VentanaChat extends JFrame {
 		scrollPane = new JScrollPane();
 		scrollPane.setEnabled(false);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		contentPane.add(scrollPane, BorderLayout.CENTER);
+		contentPane.add(scrollPane);
 
 		scrollUsuarios = new JScrollPane();
 		scrollUsuarios.setEnabled(false);
 		scrollUsuarios.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		usuariosConectados.add(scrollUsuarios, BorderLayout.CENTER);
+		usuariosConectados.add(scrollUsuarios);
 
 		textArea = new JTextArea();
 		textArea.setEditable(false);
@@ -240,6 +233,7 @@ public class VentanaChat extends JFrame {
 		scrollUsuarios.setViewportView(usuariosActivos);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		pack();
 		setLocationRelativeTo(null);
 
 	}
