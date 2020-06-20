@@ -107,6 +107,7 @@ public class ThreadUsuario extends Thread {
 	 */
 	public void sendMessage(String message) {
 		try {
+			objectOutpuStream.reset();
 			objectOutpuStream.writeObject(message);
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());
@@ -119,6 +120,7 @@ public class ThreadUsuario extends Thread {
 	public void sendMessage(Mensaje message) {
 		try {
 			Command mensajeCommand = new Command(CommandType.MENSAJE, message);
+			objectOutpuStream.reset();
 			objectOutpuStream.writeObject(mensajeCommand);
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());
@@ -127,6 +129,7 @@ public class ThreadUsuario extends Thread {
 	
 	public void sendCommand(Command command) {
 		try {
+			objectOutpuStream.reset();
 			objectOutpuStream.writeObject(command);
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());

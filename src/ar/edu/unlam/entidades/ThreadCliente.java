@@ -41,7 +41,7 @@ public class ThreadCliente extends Thread {
 				default:
 					break;
 				}
-
+				
 				newCommand = (Command) objectInputStream.readObject();
 			}
 
