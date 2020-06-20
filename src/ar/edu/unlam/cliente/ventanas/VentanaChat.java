@@ -77,7 +77,7 @@ public class VentanaChat extends JFrame {
 		btnExportar.setEnabled(false);
 
 		textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
-		textArea.setEditable(false);
+		textArea.setEditable(true);
 		textArea.setForeground(Color.RED);
 
 		textField.addKeyListener(new KeyAdapter() {
@@ -139,6 +139,7 @@ public class VentanaChat extends JFrame {
 		usuariosConectados.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Actualizo a quien le quiero mandar el mensaje
+				usuarioSeleccionado = null;
 				String selectedItem = (String) usuariosConectados.getSelectedItem();
 				if(selectedItem != null && !selectedItem.equalsIgnoreCase("Todos")) {
 					Usuario usuarioByUserName = salaChat.getUsuarioByUserName(selectedItem);
@@ -205,9 +206,16 @@ public class VentanaChat extends JFrame {
 						.withZone( ZoneId.systemDefault() );
 		String formatedDate = formatter.format(mensaje.getInstantCreacion());
 
-		Usuario usuarioByUserId = salaChat.getUsuarioByUserId(mensaje.getUserCreadorId());
-		String stringMessage = usuarioByUserId.getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
-		appendToPane(stringMessage, mensaje.getUserDestinoId() != null ? Color.RED : Color.BLACK);
+		Color messageColor = Color.BLACK;
+		String stringMessage = mensaje.getUserCreador().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
+		if(mensaje.getUserDestino() != null) {
+			messageColor = Color.RED;
+			if(mensaje.getUserCreador().equals(Cliente.getInstance().getUser())) {
+				stringMessage = mensaje.getUserDestino().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
+			}
+		}
+
+		appendToPane(stringMessage, mensaje.getUserDestino() != null ? Color.RED : Color.BLACK);
 		btnExportar.setEnabled(true);
 	}
 
@@ -252,7 +260,7 @@ public class VentanaChat extends JFrame {
 	private void mostrarUsuariosEnSala() {
 		System.out.println("Actualizo los usuarios en la sala");
 		for (Usuario usuario : salaChat.getUsuariosInSala()) {
-			System.out.println(usuario.getUserName() + " está en la sala");
+			System.out.println(usuario.getUserName() + " esta en la sala");
 		}
 		
 	}

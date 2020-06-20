@@ -3,6 +3,7 @@ package ar.edu.unlam.entidades1;
 import ar.edu.unlam.cliente.ventanas.VentanaChat;
 import ar.edu.unlam.cliente.ventanas.VentanaLobby;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Cliente extends Thread {
 	private static Cliente instance;
 	private Usuario user;
 	public VentanaLobby ventanaLobby;
+	private boolean logged = false;
 
 	public Cliente() {
 
@@ -32,18 +34,28 @@ public class Cliente extends Thread {
 		inputStream = socket.getInputStream();
 
 		objectOutputStream = new ObjectOutputStream(outputStream);
-
+		
 		objectInputStream = new ObjectInputStream(inputStream);
-
+	
 		objectOutputStream.writeObject(userName);
 		Command command = (Command) objectInputStream.readObject();
 
 		if (command.getCommandType().equals(CommandType.USER)) {
 			Scanner readerFromKB = new Scanner(System.in);
 			this.user = (Usuario) command.getInfo();
-			ThreadCliente threadCliente = new ThreadCliente(objectInputStream, socket, this);
+			logged = true;
+			ThreadCliente threadCliente = new ThreadCliente(objectInputStream, socket,this);
 			threadCliente.start();
+		} else {
+			logged = false;
+			JDialog ld = new JDialog();
+			JOptionPane.showMessageDialog(ld,
+                        //"Bienvenido " + ingCli.getUserName() + "!",
+                		command.getInfo(),
+                        "Login",
+                        JOptionPane.ERROR_MESSAGE);
 		}
+		mostrarLobby();
 	}
 
 	public static Cliente getInstance() {
@@ -83,6 +95,10 @@ public class Cliente extends Thread {
 
 	public void mostrarLobby() {
 		ventanaLobby = new VentanaLobby(this.user);
+		JOptionPane.showMessageDialog(ventanaLobby,
+				"Bienvenido " +  "!",
+				"Login",
+				JOptionPane.INFORMATION_MESSAGE);
 		ventanaLobby.setVisible(true);
 		this.getSalas();
 	}
@@ -113,20 +129,24 @@ public class Cliente extends Thread {
 
 	public void enviarMensaje(Usuario usuarioSeleccionado, SalaChat salaChat, String mensaje) {
 		System.out.println("Enviando mensae desde cleinte");
-		Mensaje clientMessage = new Mensaje(this.user.getId(), usuarioSeleccionado.getId(), salaChat.getId(), mensaje);
+		Mensaje clientMessage = new Mensaje(this.user, usuarioSeleccionado, salaChat.getId(), mensaje);
 		Command command = new Command(CommandType.MENSAJE, clientMessage);
 		this.sendCommand(command);
 	}
 
 	public void enviarMensaje(SalaChat salaChat, String mensaje) {
 		System.out.println("Enviando mensae desde cleinte");
-		Mensaje clientMessage = new Mensaje(this.user.getId(), salaChat.getId(), mensaje);
+		Mensaje clientMessage = new Mensaje(this.user, salaChat.getId(), mensaje);
 		Command command = new Command(CommandType.MENSAJE, clientMessage);
 		this.sendCommand(command);
 	}
 
 	public void actualizarMensajes(Mensaje clientMessage) {
 		this.ventanaLobby.actualizarMensajes(clientMessage);
+	}
+
+	public boolean isLogged() {
+		return logged;
 	}
 
 	public void actualizarUsuariosEnSala(SalaChat sala) {

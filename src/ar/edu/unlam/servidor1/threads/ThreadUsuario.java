@@ -47,12 +47,13 @@ public class ThreadUsuario extends Thread {
 						salaId = (Long)command.getInfo();
 						server.salirDeSala(salaId, this.usuario);
 						break;
+
 					case MENSAJE:
 						System.out.println("Mensaje recibido");
 						Mensaje clientMessage = (Mensaje) command.getInfo();
 						command = server.procesarMensaje(clientMessage);
+
 						break;
-						
 						/*if(clientMessage.getUserDest() == null) {
 							server.broadcast(clientMessage, this);
 						} else {
@@ -85,6 +86,10 @@ public class ThreadUsuario extends Thread {
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());
 		}
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
 	@Override

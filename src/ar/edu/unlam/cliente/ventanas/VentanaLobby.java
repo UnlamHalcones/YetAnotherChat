@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -35,7 +36,7 @@ public class VentanaLobby extends JFrame {
 	private List<VentanaChat> ventanasChat;
 
 	public VentanaLobby(Usuario usuario) {
-
+		
 		super();
 		System.out.println("construyo");
 		this.usuario = usuario;
@@ -75,6 +76,21 @@ public class VentanaLobby extends JFrame {
 		this.scrollPane.setViewportView(this.lista);
 		this.panelLista.add(this.scrollPane, BorderLayout.CENTER);
 
+		JMenuBar jMenuBar = new JMenuBar();
+		JMenu loginMenu = new JMenu("Login");
+		JMenuItem loginItem = new JMenuItem("Login");
+		loginItem.setToolTipText("Login server");
+
+		loginItem.addActionListener(e -> {
+			new VentanaIngresoCliente();
+			dispose();
+		});
+
+		loginMenu.add(loginItem);
+		jMenuBar.add(loginMenu);
+
+		setJMenuBar(jMenuBar);
+
 		this.panel.add(this.etiqueta);
 		this.panel.add(this.lista);
 		this.panel.add(this.panelLista);
@@ -89,7 +105,7 @@ public class VentanaLobby extends JFrame {
 
 		System.out.println("Tengo " + this.lobby.getSalas().size() + " salas.");
 		lista.removeAll();
-		for (SalaChat salaChat : this.lobby.getSalas()) {
+		for(SalaChat salaChat : this.lobby.getSalas()) {
 			System.out.println("pasando por la sala " + salaChat.getId());
 
 			JButton btnSala = new JButton();
@@ -126,6 +142,7 @@ public class VentanaLobby extends JFrame {
 				crearSala();
 			}
 		});
+		btnCrearSala.setEnabled(Cliente.getInstance().isLogged());
 		lista.add(btnCrearSala);
 	}
 
@@ -161,10 +178,12 @@ public class VentanaLobby extends JFrame {
 	public void actualizarMensajes(Mensaje clientMessage) {
 		Long salaOrigenId = clientMessage.getSalaOrigenId();
 		SalaChat salaById = this.lobby.getSalaById(salaOrigenId);
-		VentanaChat ventanaChat = this.ventanasChat.stream().filter(ventana -> ventana.getSalaChat().equals(salaById))
-				.findAny().orElse(null);
-		ventanaChat.actualizarMensajes(clientMessage);
+		List<VentanaChat> ventanasDeChatAActualizar = this.ventanasChat.stream()
+				.filter(ventana -> ventana.getSalaChat().getId().equals(salaById.getId()))
+				.collect(Collectors.toList());
+		ventanasDeChatAActualizar.forEach(ventanaChat -> ventanaChat.actualizarMensajes(clientMessage));
 	}
+
 
 	public VentanaChat getVentanaPorSalaChat(SalaChat salaChat) {
 		System.out.println("Tengo " + this.ventanasChat.size() + " ventanasChat en getVentanaPorSalaChat");

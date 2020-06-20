@@ -32,10 +32,10 @@ public class ClientePrueba extends Thread {
             Thread hiloEscritura = new Thread(() -> {
                 try {
                     String str = readerFromKB.nextLine();
-                    Mensaje mensaje1 = new Mensaje(user.getId(), user.getId(), user.getId(), str);
+                    Mensaje mensaje1 = new Mensaje(user, user, user.getId(), str);
                     while (!str.equals("DISCONNECT")) {
                         Command mensajeCommand = new Command(CommandType.MENSAJE, mensaje1);
-                        mensaje1 = new Mensaje(user.getId(), user.getId(), user.getId(), str);
+                        mensaje1 = new Mensaje(user, user, user.getId(), str);
                         objectOutputStream.writeObject(mensajeCommand);
                         objectOutputStream.reset();
                         str = readerFromKB.nextLine();

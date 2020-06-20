@@ -167,7 +167,6 @@ public class VentanaIngresoCliente extends JFrame {
 	    		try {
 					Cliente client = Cliente.getInstance();
 					client.init( tfIp.getText(), Integer.valueOf(ftfPuerto.getText()), tfUsername.getText());
-					client.mostrarLobby();
 				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -180,11 +179,11 @@ public class VentanaIngresoCliente extends JFrame {
 				}
 	    			
 	    		//ingCli = new IngresoCliente(tfUsername.getText(), tfIp.getText(), Integer.valueOf(ftfPuerto.getText()));
-                JOptionPane.showMessageDialog(ld,
+                /*JOptionPane.showMessageDialog(ld,
                         //"Bienvenido " + ingCli.getUserName() + "!",
                 		"Bienvenido " +  "!",
                         "Login",
-                        JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.INFORMATION_MESSAGE);*/
                 dispose();
 	    }
 	    
