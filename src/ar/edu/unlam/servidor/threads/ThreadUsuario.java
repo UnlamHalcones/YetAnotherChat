@@ -57,9 +57,10 @@ public class ThreadUsuario extends Thread {
 					break;
 
 				case CREAR_SALA:
+					System.out.println("Me pidieron que cree una sala");
 					SalaChat salaChat = (SalaChat) command.getInfo();
 					String crearSalaResponse = server.lobby.crearSala(salaChat);
-
+					
 					if (crearSalaResponse.isEmpty()) {
 						responderSalas();
 					}
@@ -92,19 +93,13 @@ public class ThreadUsuario extends Thread {
 	}
 
 	private void responderSalas() {
-		
-		Map<Integer, SalaChat> auxSalas = new HashMap<Integer, SalaChat>();
 
-		auxSalas.put(0, new SalaChat(0, "General", 15));
-		auxSalas.put(1, new SalaChat(1, "Sala 1", 10));
-		auxSalas.put(2, new SalaChat(2, "Sala 2", 10));
-		auxSalas.put(3, new SalaChat(3, "Sala 3", 10));
-		auxSalas.put(4, new SalaChat(4, "Sala 4", 10));
-		
-		Command responseCommand = new Command(CommandType.INFO_SALAS, auxSalas);
-		
 		System.out.println("respondo salas");
-		server.broadcast(responseCommand, null);
+		System.out.println("Tengo " + server.lobby.getSalas().size() + " salas en el server");
+		Command responseCommand = new Command(CommandType.INFO_SALAS, server.getLobby().getSalas());
+		
+		
+		server.broadcastSalas(responseCommand, null);
 	}
 
 	/**
@@ -112,6 +107,7 @@ public class ThreadUsuario extends Thread {
 	 */
 	public void sendMessage(String message) {
 		try {
+			objectOutpuStream.reset();
 			objectOutpuStream.writeObject(message);
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());
@@ -124,6 +120,7 @@ public class ThreadUsuario extends Thread {
 	public void sendMessage(Mensaje message) {
 		try {
 			Command mensajeCommand = new Command(CommandType.MENSAJE, message);
+			objectOutpuStream.reset();
 			objectOutpuStream.writeObject(mensajeCommand);
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());
@@ -132,6 +129,7 @@ public class ThreadUsuario extends Thread {
 	
 	public void sendCommand(Command command) {
 		try {
+			objectOutpuStream.reset();
 			objectOutpuStream.writeObject(command);
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());

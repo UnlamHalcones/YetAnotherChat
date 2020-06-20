@@ -38,6 +38,7 @@ public class SalaChat implements Serializable{
 		this.usuariosConectados = new ArrayList<Usuario>();
 		this.usuariosConectados.add(user);
 		this.fechaCreacion = new FechaChat();
+		this.creador = user;
 		
 	}
 
