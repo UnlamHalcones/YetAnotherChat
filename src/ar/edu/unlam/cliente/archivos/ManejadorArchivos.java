@@ -8,16 +8,16 @@ import java.util.ArrayList;
 
 public abstract class ManejadorArchivos {
 
-	public void guardarLogMensajes(String logMensajes) {
+	public static void exportarLogs(byte[] log) {
 		
-		String pathDefinitivo = File.separator + "registro.csv";
+		String path ="logs"+File.separator+"test.log";
 		
 		BufferedWriter out;
 
 		try {
 			
-			out = new BufferedWriter(new FileWriter(pathDefinitivo, true));
-			out.write(logMensajes);
+			out = new BufferedWriter(new FileWriter(path, true));
+			out.write(new String(log));
 			out.close();
 			}
 		

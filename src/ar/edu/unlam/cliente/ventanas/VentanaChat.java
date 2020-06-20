@@ -43,6 +43,8 @@ public class VentanaChat extends JFrame {
 	private JTextField textField;
 	private JButton btnEnviar;
 	private JButton btnExportar;
+	
+
 	//IngresoCliente cliente;
 	private JComboBox<String> usuariosConectados;
 	private SalaChat salaChat;
@@ -239,4 +241,5 @@ public class VentanaChat extends JFrame {
 	public void actualizarMensajes(Mensaje clientMessage) {
 		this.agregarMensajeTextAreaLocal(clientMessage);
 	}
+	
 }

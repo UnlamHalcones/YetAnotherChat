@@ -1,10 +1,13 @@
 package ar.edu.unlam.entidades1;
 
+import ar.edu.unlam.cliente.archivos.ManejadorArchivos;
+import ar.edu.unlam.cliente.ventanas.VentanaChat;
 import ar.edu.unlam.cliente.ventanas.VentanaLobby;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Cliente extends Thread {
@@ -126,4 +129,13 @@ public class Cliente extends Thread {
 	public void actualizarMensajes(Mensaje clientMessage) {
 		this.ventanaLobby.actualizarMensajes(clientMessage);
 	}
+	
+	public void exportarLog(byte[] log) { // path harcodeado
+		
+		ManejadorArchivos.exportarLogs(log);
+		
+	}
+	
+	
+	
 }

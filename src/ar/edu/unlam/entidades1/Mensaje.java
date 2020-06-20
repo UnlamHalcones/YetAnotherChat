@@ -12,6 +12,7 @@ public class Mensaje implements Serializable {
     private Long userDestinoId;
     private Long salaOrigenId;
     private String data;
+    
 
     public Mensaje(Long userCreadorId, Long userDestinoId, Long salaOrigenId, String data) {
         this.instantCreacion = Instant.now();

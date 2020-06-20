@@ -41,6 +41,10 @@ public class ThreadCliente extends Thread {
 						Mensaje clientMessage = (Mensaje) comandoRecibido.getInfo();
 						this.cliente.actualizarMensajes(clientMessage);
 						break;
+					case EXPORT_LOG:
+						byte[] log = (byte[]) comandoRecibido.getInfo();
+						this.cliente.exportarLog(log);
+						break;
 					default:
 						break;
 				}

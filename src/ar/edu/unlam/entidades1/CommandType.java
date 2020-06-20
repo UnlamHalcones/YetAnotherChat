@@ -9,5 +9,6 @@ public enum CommandType {
     ERROR,
     DISCONNECT,
     USER,
+    EXPORT_LOG,
     LOGIN;
 }

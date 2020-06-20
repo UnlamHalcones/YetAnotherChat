@@ -49,6 +49,10 @@ public class VentanaLobby extends JFrame {
 		initialize();
 	}
 
+	public List<VentanaChat> getVentanasChat() {
+		return ventanasChat;
+	}
+
 	private void initialize() {
 		setResizable(false);
 		setTitle("Lobby");

@@ -202,6 +202,27 @@ public class ServidorChat {
         System.err.println(mensajeError);
         return new Command(CommandType.ERROR, mensajeError);
     }
+    
+    
+    public Command exportarLog(Long salaID, Long userID) {
+    	
+    	SalaChat sala = existeSalaConId(salaID);
+    	
+    	if(sala==null)
+    		return generarComandoError("No se encontro la sala");
+    	
+    	String log="";
+    	
+    	for (Mensaje mensaje : sala.getMensajes()) {
+			
+    		if(mensaje.getUserDestinoId()==null || mensaje.getUserDestinoId()==userID)
+    			log+=mensaje.getInstantCreacion().toString()+" "+mensaje.getUserCreadorId()+": "+mensaje.getData();
+    		
+		}
+    	
+    	
+    	return new Command(CommandType.EXPORT_LOG,log.getBytes());
+    }
 
     private Usuario existeUsuarioConId(Long id) {
         if(id == null) {
