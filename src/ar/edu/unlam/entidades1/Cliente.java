@@ -1,5 +1,6 @@
 package ar.edu.unlam.entidades1;
 
+import ar.edu.unlam.cliente.archivos.ManejadorArchivos;
 import ar.edu.unlam.cliente.ventanas.VentanaChat;
 import ar.edu.unlam.cliente.ventanas.VentanaLobby;
 

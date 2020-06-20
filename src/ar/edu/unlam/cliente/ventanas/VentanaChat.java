@@ -28,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TimeZone;
 
 import ar.edu.unlam.entidades1.*;
@@ -56,7 +57,7 @@ public class VentanaChat extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				int confirm = JOptionPane.showOptionDialog(splitPane, "¿Está seguro que desea salir de la sala?",
+				int confirm = JOptionPane.showOptionDialog(splitPane, "ï¿½Estï¿½ seguro que desea salir de la sala?",
 						"Salir de sala", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 				if (confirm == JOptionPane.YES_OPTION) {
 					// Desconectar del servidor
