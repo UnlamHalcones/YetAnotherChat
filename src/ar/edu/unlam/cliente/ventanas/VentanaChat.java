@@ -6,17 +6,11 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.WindowAdapter;
@@ -27,9 +21,16 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
-import ar.edu.unlam.entidades.*;
+import ar.edu.unlam.entidades1.*;
 
 public class VentanaChat extends JFrame {
 
@@ -37,19 +38,19 @@ public class VentanaChat extends JFrame {
 	private JPanel izqPanel;
 	private JPanel derPanel;
 	private JScrollPane scrollPane;
-	private JTextArea textArea;
+	private JTextPane textArea;
 	private JPanel inputPanel;
 	private JTextField textField;
 	private JButton btnEnviar;
 	private JButton btnExportar;
 	//IngresoCliente cliente;
 	private JComboBox<String> usuariosConectados;
-	Date fecha;
+	private SalaChat salaChat;
+	private Usuario usuarioSeleccionado;
 
-	// public VentanaChat(String usuario) {
-	public VentanaChat() {
-
-		setTitle("Sala PONER NOMBRE!!");
+	public VentanaChat(SalaChat salaChat) {
+		this.salaChat = salaChat;
+		setTitle(salaChat.getNombreSala());
 		setBounds(100, 100, 500, 500);
 
 		addWindowListener(new WindowAdapter() {
@@ -65,7 +66,7 @@ public class VentanaChat extends JFrame {
 		derPanel = new JPanel();
 
 		scrollPane = new JScrollPane();
-		textArea = new JTextArea();
+		textArea = new JTextPane();
 
 		inputPanel = new JPanel();
 		textField = new JTextField();
@@ -81,11 +82,16 @@ public class VentanaChat extends JFrame {
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-
+				// TODO HACER EL ENVIO DE UN MENSAJE
 				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-					agregarTextoTextAreaLocal(textField.getText() + "\n");
+					String mensaje = textField.getText();
+					if(usuarioSeleccionado == null) {
+						Cliente.getInstance().enviarMensaje(salaChat, mensaje);
+					} else {
+						Cliente.getInstance().enviarMensaje(usuarioSeleccionado, salaChat, mensaje);
+					}
+//				agregarTextoTextAreaLocal(mensaje + "\n");
 					selectAllTextoTextField(textField);
-					textField.setText("");
 				}
 
 			}
@@ -106,8 +112,13 @@ public class VentanaChat extends JFrame {
 
 		btnEnviar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-				agregarTextoTextAreaLocal(textField.getText() + "\n");
+				String mensaje = textField.getText();
+				if(usuarioSeleccionado == null) {
+					Cliente.getInstance().enviarMensaje(salaChat, mensaje);
+				} else {
+					Cliente.getInstance().enviarMensaje(usuarioSeleccionado, salaChat, mensaje);
+				}
+//				agregarTextoTextAreaLocal(mensaje + "\n");
 				selectAllTextoTextField(textField);
 			}
 		});
@@ -118,18 +129,22 @@ public class VentanaChat extends JFrame {
 		btnExportar.setToolTipText("Click para exportar el Chat");
 
 		usuariosConectados = new JComboBox<String>();
-		// for(Usuario us : Usuarios.values()) usuariosConectados.addItem(us.name());
 		usuariosConectados.addItem("Todos");
-		usuariosConectados.addItem("Juan");
-		usuariosConectados.addItem("Pepe");
-		usuariosConectados.addItem("Pablo");
-		usuariosConectados.addItem("Jos�");
-		usuariosConectados.addItem("Pacho");
+		salaChat.getUsuariosInSala().forEach(usuario -> {
+			usuariosConectados.addItem(usuario.getUserName());
+		});
 
 		usuariosConectados.setSelectedItem("Todos");
 		usuariosConectados.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				// Actualizo a quien le quiero mandar el mensaje
+				String selectedItem = (String) usuariosConectados.getSelectedItem();
+				if(selectedItem != null && !selectedItem.equalsIgnoreCase("Todos")) {
+					Usuario usuarioByUserName = salaChat.getUsuarioByUserName(selectedItem);
+					if(usuarioByUserName != null) {
+						usuarioSeleccionado = usuarioByUserName;
+					}
+				}
 			}
 		});
 
@@ -181,14 +196,29 @@ public class VentanaChat extends JFrame {
 		pack();
 	}
 
-	private void agregarTextoTextAreaLocal(String texto) {
-		fecha = new Date();
-		DateFormat hourdateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		textArea.append("Mi Usuario" + "(" + hourdateFormat.format(fecha) + ") ");
-		textArea.append(usuariosConectados.getSelectedItem().toString() + ": \n");
-		textArea.append(texto);
-		textArea.setCaretPosition(textArea.getText().length());
+	private void agregarMensajeTextAreaLocal(Mensaje mensaje) {
+		DateTimeFormatter formatter =
+				DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
+						.withZone( ZoneId.systemDefault() );
+		String formatedDate = formatter.format(mensaje.getInstantCreacion());
+
+		Usuario usuarioByUserId = salaChat.getUsuarioByUserId(mensaje.getUserCreadorId());
+		String stringMessage = usuarioByUserId.getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
+		appendToPane(stringMessage, mensaje.getUserDestinoId() != null ? Color.RED : Color.BLACK);
 		btnExportar.setEnabled(true);
+	}
+
+	private void appendToPane(String msg, Color c) {
+		StyleContext sc = StyleContext.getDefaultStyleContext();
+		AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+
+		aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+		aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+		int len = textArea.getDocument().getLength();
+		textArea.setCaretPosition(len);
+		textArea.setCharacterAttributes(aset, false);
+		textArea.replaceSelection(msg);
 	}
 
 	private void selectAllTextoTextField(JTextField textField) {
@@ -198,4 +228,15 @@ public class VentanaChat extends JFrame {
 
 	}
 
+	public SalaChat getSalaChat() {
+		return salaChat;
+	}
+
+	public void setSalaChat(SalaChat salaChat) {
+		this.salaChat = salaChat;
+	}
+
+	public void actualizarMensajes(Mensaje clientMessage) {
+		this.agregarMensajeTextAreaLocal(clientMessage);
+	}
 }

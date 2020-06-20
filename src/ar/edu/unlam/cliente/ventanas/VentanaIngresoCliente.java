@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import ar.edu.unlam.entidades.*;
+import ar.edu.unlam.entidades1.*;
 
 public class VentanaIngresoCliente extends JFrame {
 	 

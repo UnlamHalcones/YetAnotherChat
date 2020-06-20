@@ -12,9 +12,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import ar.edu.unlam.entidades.Cliente;
-import ar.edu.unlam.entidades.SalaChat;
-import ar.edu.unlam.entidades.Usuario;
+import ar.edu.unlam.entidades1.Cliente;
+import ar.edu.unlam.entidades1.SalaChat;
+import ar.edu.unlam.entidades1.Usuario;
 
 public class VentanaCrearSala extends JDialog {
 
@@ -103,25 +103,10 @@ public class VentanaCrearSala extends JDialog {
 		if (nombreDeLaSala.getText().length() == 0) {
 			JOptionPane.showConfirmDialog(this, "Debe ingresar el nombre de la sala.", "Atencion...",
 					JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
-		} else if (cantidadParticipantes.getText().length() == 0) {
-			JOptionPane.showConfirmDialog(this, "Debe definir la cantidad de participantes [1 a 99 participantes].",
-					"Atencion...", JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
-		} else if (Integer.parseInt(cantidadParticipantes.getText()) <= 0) {
-			JOptionPane.showConfirmDialog(this, "Debe definir la cantidad de participantes [1 a 99 participantes].",
-					"Atencion...", JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
 		} else if (JOptionPane.showConfirmDialog(this, "Desea crear la sala", "Confirmar...",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
-			this.cliente.crearSalaEnServer(new SalaChat(0, nombreDeLaSala.getText(),
-					Integer.parseInt(cantidadParticipantes.getText()), this.usuario));
-
-			String mensaje = "";
-			if (mensaje.isEmpty()) {
-				this.actualiza = true;
-				cerrarVentana();
-			} else {
-				JOptionPane.showConfirmDialog(this, mensaje, "Atencion...", JOptionPane.CLOSED_OPTION,
-						JOptionPane.WARNING_MESSAGE);
-			}
+			this.cliente.crearSalaEnServer(nombreDeLaSala.getText());
+			this.cerrarVentana();
 		}
 	}
 

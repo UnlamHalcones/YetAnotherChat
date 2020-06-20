@@ -68,7 +68,7 @@ public class Cliente extends Thread {
 							case INFO_SALAS:
 								Map<Integer, SalaChat> clientSalas = (Map<Integer, SalaChat>) newCommand.getInfo();
 
-								System.out.println("Soy " + this.user.getUserNickname() + " y recibí respuesta. "
+								System.out.println("Soy " + this.user.getUserNickname() + " y recibï¿½ respuesta. "
 										+ clientSalas.size() + " salas.");
 								actualizarSalas(clientSalas);
 
@@ -136,14 +136,14 @@ public class Cliente extends Thread {
 
 	public void actualizarSalas(Map<Integer, SalaChat> salasChat) {
 		//System.out.println("Soy " + user.getUserNickname() + " y me mandaron a actualizar salas.");
-		this.ventanaLobby.lobby.setSalas(salasChat);
+//		this.ventanaLobby.lobby.setSalas(salasChat);
 
-		this.ventanaLobby.mostrarSalas(salasChat);
+//		this.ventanaLobby.mostrarSalas(salasChat);
 	}
 
 	public void mostrarLobby() {
-		ventanaLobby = new VentanaLobby(this.user);
-		ventanaLobby.setVisible(true);
+//		ventanaLobby = new VentanaLobby(this.user);
+//		ventanaLobby.setVisible(true);
 		this.getSalas();
 	}
 
