@@ -76,9 +76,26 @@ public class VentanaChat extends JFrame {
 		btnExportar.setEnabled(false);
 
 		textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
-		textArea.setEditable(false);
+		textArea.setEditable(true);
 		textArea.setForeground(Color.RED);
 
+		textArea.addKeyListener(new KeyAdapter() {
+			// Este key adapter lo pongo para poder asiganrle texto al pane, pero qeu no se pueda moficar con teclado
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// do nothing
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				//do nothing
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				//do nothing
+			}
+		});
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -138,6 +155,7 @@ public class VentanaChat extends JFrame {
 		usuariosConectados.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Actualizo a quien le quiero mandar el mensaje
+				usuarioSeleccionado = null;
 				String selectedItem = (String) usuariosConectados.getSelectedItem();
 				if(selectedItem != null && !selectedItem.equalsIgnoreCase("Todos")) {
 					Usuario usuarioByUserName = salaChat.getUsuarioByUserName(selectedItem);
@@ -202,8 +220,15 @@ public class VentanaChat extends JFrame {
 						.withZone( ZoneId.systemDefault() );
 		String formatedDate = formatter.format(mensaje.getInstantCreacion());
 
-		Usuario usuarioByUserId = salaChat.getUsuarioByUserId(mensaje.getUserCreadorId());
-		String stringMessage = usuarioByUserId.getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
+		Color messageColor = Color.BLACK;
+		String stringMessage = mensaje.getUserCreadorId().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
+		if(mensaje.getUserDestinoId() != null) {
+			messageColor = Color.RED;
+			if(mensaje.getUserCreadorId().equals(Cliente.getInstance().getUser())) {
+				stringMessage = mensaje.getUserDestinoId().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
+			}
+		}
+
 		appendToPane(stringMessage, mensaje.getUserDestinoId() != null ? Color.RED : Color.BLACK);
 		btnExportar.setEnabled(true);
 	}

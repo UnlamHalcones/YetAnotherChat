@@ -8,12 +8,12 @@ public class Mensaje implements Serializable {
 
     private static final long serialVersionUID = -5159387314389978126L;
     private Instant instantCreacion;
-    private Long userCreadorId;
-    private Long userDestinoId;
+    private Usuario userCreadorId;
+    private Usuario userDestinoId;
     private Long salaOrigenId;
     private String data;
 
-    public Mensaje(Long userCreadorId, Long userDestinoId, Long salaOrigenId, String data) {
+    public Mensaje(Usuario userCreadorId, Usuario userDestinoId, Long salaOrigenId, String data) {
         this.instantCreacion = Instant.now();
         this.userCreadorId = userCreadorId;
         this.userDestinoId = userDestinoId;
@@ -21,7 +21,7 @@ public class Mensaje implements Serializable {
         this.data = data;
     }
 
-    public Mensaje(Long userCreadorId, Long salaOrigenId, String data) {
+    public Mensaje(Usuario userCreadorId, Long salaOrigenId, String data) {
         this.instantCreacion = Instant.now();
         this.userCreadorId = userCreadorId;
         this.salaOrigenId = salaOrigenId;
@@ -36,19 +36,19 @@ public class Mensaje implements Serializable {
         this.instantCreacion = instantCreacion;
     }
 
-    public Long getUserCreadorId() {
+    public Usuario getUserCreadorId() {
         return userCreadorId;
     }
 
-    public void setUserCreadorId(Long userCreadorId) {
+    public void setUserCreadorId(Usuario userCreadorId) {
         this.userCreadorId = userCreadorId;
     }
 
-    public Long getUserDestinoId() {
+    public Usuario getUserDestinoId() {
         return userDestinoId;
     }
 
-    public void setUserDestinoId(Long userDestinoId) {
+    public void setUserDestinoId(Usuario userDestinoId) {
         this.userDestinoId = userDestinoId;
     }
 

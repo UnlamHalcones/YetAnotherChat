@@ -38,23 +38,35 @@ public class ServidorChat {
 
                 // Creacion del usuario que se conecta
                 String userNickName = (String)objectInputStream.readObject();
-                Usuario newUser = new Usuario(Long.valueOf(usuariosInServer.size()), userNickName);
-                usuariosInServer.add(newUser);
-                System.out.println("User: " + userNickName + " connected");
+                Command command;
+                if(!existeUserWithNickName(userNickName)) {
+                    Usuario newUser = new Usuario(Long.valueOf(usuariosInServer.size()), userNickName);
+                    usuariosInServer.add(newUser);
+                    System.out.println("User: " + userNickName + " connected");
 
-                Command command = new Command(CommandType.USER, newUser);
+                    command = new Command(CommandType.USER, newUser);
+
+                    // Creacion del hilo que va a manejar la comunicacion con el usuario
+                    ThreadUsuario threadUsuario = new ThreadUsuario(objectInputStream, objectOutputStream, this, newUser);
+                    userThreads.add(threadUsuario);
+                    threadUsuario.start();
+                } else {
+                    command = new Command(CommandType.ERROR, "Ya existe un usuario con ese nombre");
+                }
+
                 objectOutputStream.reset();
                 objectOutputStream.writeObject(command);
 
-                // Creacion del hilo que va a manejar la comunicacion con el usuario
-                ThreadUsuario threadUsuario = new ThreadUsuario(objectInputStream, objectOutputStream, this, newUser);
-                userThreads.add(threadUsuario);
-                threadUsuario.start();
             }
         } catch (IOException | ClassNotFoundException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
         }
+    }
+
+    private boolean existeUserWithNickName(String userNickName) {
+        return this.usuariosInServer.stream()
+                .anyMatch(usuario -> usuario.getUserName().equalsIgnoreCase(userNickName));
     }
 
     public synchronized void broadcast(Command command) {
@@ -159,43 +171,49 @@ public class ServidorChat {
     }
 
     public Command procesarMensaje(Mensaje clientMessage) {
-        // TODO WIP
         System.out.println("mensaje procesado");
         Command comando = null;
         Long salaOrigenId = clientMessage.getSalaOrigenId();
-        Long userCreadorId = clientMessage.getUserCreadorId();
-        Long userDestinoId = clientMessage.getUserDestinoId();
+        Usuario userCreadorId = clientMessage.getUserCreadorId();
+        Usuario userDestinoId = clientMessage.getUserDestinoId();
         SalaChat salaChat = existeSalaConId(salaOrigenId);
+
         if(salaChat != null) {
-            Usuario usuarioCreador = existeUsuarioConId(userCreadorId);
-            Usuario usuarioDestino = existeUsuarioConId(userDestinoId);
-            if(usuarioCreador == null) {
-                comando = generarComandoError("No existe el usuario desde el que se quiere enviar.");
-            }
-            else if(!salaChat.hasUser(usuarioCreador)) {
-                comando = generarComandoError("El usuario desde el que se quiere enviar no esta en la sala.");
-            }
-            else if(usuarioDestino == null) {
-                comando = generarComandoError("No existe el usuario al que se quiere enviar.");
-            } else if(!salaChat.hasUser(usuarioDestino)) {
-                comando = generarComandoError("El usuario al que se quiere enviar no esta en la sala.");
-            } else {
-                Command command = new Command(CommandType.MENSAJE, clientMessage);
-                salaChat.agregarMensaje(clientMessage);
-                System.out.println("Enviado mensajes");
-                new Thread(() -> {
-                    if(userDestinoId == null) {
-                        this.broadcast(command);
+            if(clientMessage.getUserDestinoId() != null) {
+                if(usuariosInServer.contains(userDestinoId)) {
+                    if(!salaChat.hasUser(userDestinoId)) {
+                        comando = generarComandoError("El usuario al que se quiere enviar no esta en la sala.");
                     } else {
-                        this.sendCommandTo(usuarioCreador, command);
-                        this.sendCommandTo(usuarioDestino, command);
+                        if(usuariosInServer.contains(userCreadorId)) {
+                            if(salaChat.hasUser(userCreadorId)) {
+                                this.sendCommandTo(userDestinoId, new Command(CommandType.MENSAJE, clientMessage));
+                                this.sendCommandTo(userCreadorId, new Command(CommandType.MENSAJE, clientMessage));
+                            } else {
+                                comando = generarComandoError("El usuario desde el se quiere enviar no esta en la sala.");
+                            }
+                        } else {
+                            comando = generarComandoError("No existe el usuario al que se quiere enviar.");
+                        }
                     }
-                }).start();
+                } else {
+                    comando = generarComandoError("No existe el usuario destino.");
+                }
+            } else {
+                this.sendCommandToUserInSala(salaChat, new Command(CommandType.MENSAJE, clientMessage));
             }
+
         } else {
             comando = generarComandoError("No existe la sala de la que quiere salir.");
         }
         return comando;
+    }
+
+    private void sendCommandToUserInSala(SalaChat salaChat, Command comando) {
+        for(ThreadUsuario threadUsuario : userThreads) {
+            if(salaChat.hasUser(threadUsuario.getUsuario())) {
+                threadUsuario.sendCommand(comando);
+            }
+        }
     }
 
     private Command generarComandoError(String mensajeError) {
@@ -229,6 +247,13 @@ public class ServidorChat {
             if(threadUsuario.hasUsuario(userDestino)) {
                 threadUsuario.sendCommand(command);
             }
+        });
+    }
+
+    public void enviarMensaje(Mensaje clientMessage) {
+
+        this.userThreads.forEach(threadUsuario -> {
+
         });
     }
 }

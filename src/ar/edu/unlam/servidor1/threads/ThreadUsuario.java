@@ -52,14 +52,7 @@ public class ThreadUsuario extends Thread {
 						System.out.println("Mensaje recibido");
 						Mensaje clientMessage = (Mensaje) command.getInfo();
 						command = server.procesarMensaje(clientMessage);
-
 						break;
-						/*if(clientMessage.getUserDest() == null) {
-							server.broadcast(clientMessage, this);
-						} else {
-							server.sendMessageTo(clientMessage);
-						}
-						break;*/
 					  /*case DISCONNECT:
 					  	server.desconectarUsuario();
 					    isConnected = false;
@@ -86,6 +79,10 @@ public class ThreadUsuario extends Thread {
 		} catch (IOException e) {
 			System.err.println("Error mandando informacion al servidor." + e.getMessage());
 		}
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
 	@Override
