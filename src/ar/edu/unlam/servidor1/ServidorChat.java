@@ -224,6 +224,14 @@ public class ServidorChat {
         return comando;
     }
 
+    private void sendCommandToUserInSala(SalaChat salaChat, Command comando) {
+        for(ThreadUsuario threadUsuario : userThreads) {
+            if(salaChat.hasUser(threadUsuario.getUsuario())) {
+                threadUsuario.sendCommand(comando);
+            }
+        }
+    }
+
     private Command generarComandoError(String mensajeError) {
         System.err.println(mensajeError);
         return new Command(CommandType.ERROR, mensajeError);
