@@ -19,18 +19,12 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Set;
-import java.util.TimeZone;
 
+import ar.edu.unlam.cliente.archivos.ManejadorArchivos;
 import ar.edu.unlam.entidades1.*;
 
 public class VentanaChat extends JFrame {
@@ -137,7 +131,18 @@ public class VentanaChat extends JFrame {
 		
 		btnExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Cliente.getInstance().solicitarLog(salaChat.getId());
+				JFileChooser jFileChooser = new JFileChooser();
+				String userHome = System.getProperty("user.home");
+				userHome = userHome + "/Downloads";
+
+				jFileChooser.setCurrentDirectory(new java.io.File(userHome));
+
+				jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+				if (jFileChooser.showOpenDialog(btnExportar) == JFileChooser.APPROVE_OPTION) {
+					ManejadorArchivos.rootPath = jFileChooser.getSelectedFile().getAbsolutePath();
+					Cliente.getInstance().solicitarLog(salaChat.getId());
+				}
 			}
 		});
 

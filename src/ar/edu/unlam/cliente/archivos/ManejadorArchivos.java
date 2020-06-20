@@ -8,13 +8,15 @@ import java.util.ArrayList;
 
 public abstract class ManejadorArchivos {
 
+	public static String rootPath;
+
 	public static void exportarLogs(byte[] data) {
 		
 		String log = new String(data);
 		
 		String fileName = log.substring(0, log.indexOf('\n'));
 		
-		String path = "Logs/" + fileName + ".log";
+		String path = rootPath + File.separator + fileName + ".log";
 		
 		BufferedWriter out;
 

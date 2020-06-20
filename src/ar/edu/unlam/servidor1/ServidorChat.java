@@ -204,6 +204,7 @@ public class ServidorChat {
                     } else {
                         if(usuariosInServer.contains(userCreadorId)) {
                             if(salaChat.hasUser(userCreadorId)) {
+                                salaChat.agregarMensaje(clientMessage);
                                 this.sendCommandTo(userDestinoId, new Command(CommandType.MENSAJE, clientMessage));
                                 this.sendCommandTo(userCreadorId, new Command(CommandType.MENSAJE, clientMessage));
                             } else {
@@ -217,6 +218,7 @@ public class ServidorChat {
                     comando = generarComandoError("No existe el usuario destino.");
                 }
             } else {
+                salaChat.agregarMensaje(clientMessage);
                 this.sendCommandToUserInSala(salaChat, new Command(CommandType.MENSAJE, clientMessage));
             }
 
@@ -254,10 +256,10 @@ public class ServidorChat {
     		Date msjDate = new Date(mensaje.getInstantCreacion().toEpochMilli());
     		
     		
-    		if(mensaje.getUserDestinoId() == null || mensaje.getUserDestinoId() == userID) {
+    		if(mensaje.getUserDestino() == null) {
     			log+=msjDate.getHours()+":"+msjDate.getMinutes()+":"+msjDate.getSeconds()+". Usuario: "+mensaje.getUserNameCreador()+". Mensaje: "+mensaje.getData()+"\n";    			
     		}
-    		else if(mensaje.getUserDestinoId() != null && (mensaje.getUserCreadorId() == userID || mensaje.getUserDestinoId() == userID )) {    			
+    		else if(mensaje.getUserDestinoId() != null && (mensaje.getUserCreadorId() == userID || mensaje.getUserDestinoId() == userID )) {
     			log+=msjDate.getHours()+":"+msjDate.getMinutes()+":"+msjDate.getSeconds()+". Usuario Origen: "+mensaje.getUserNameCreador()+" a Usuario Destino: "+ mensaje.getUserNameDestino() 
     			+ ". Mensaje: " + mensaje.getData()+"\n";
     		}
