@@ -35,7 +35,7 @@ public class VentanaLobby extends JFrame {
 	private List<VentanaChat> ventanasChat;
 
 	public VentanaLobby(Usuario usuario) {
-		
+
 		super();
 		System.out.println("construyo");
 		this.usuario = usuario;
@@ -89,7 +89,7 @@ public class VentanaLobby extends JFrame {
 
 		System.out.println("Tengo " + this.lobby.getSalas().size() + " salas.");
 		lista.removeAll();
-		for(SalaChat salaChat : this.lobby.getSalas()) {
+		for (SalaChat salaChat : this.lobby.getSalas()) {
 			System.out.println("pasando por la sala " + salaChat.getId());
 
 			JButton btnSala = new JButton();
@@ -154,15 +154,22 @@ public class VentanaLobby extends JFrame {
 		VentanaChat ventanaChat = new VentanaChat(salaChat);
 		ventanaChat.setVisible(true);
 		this.ventanasChat.add(ventanaChat);
+		
+		System.out.println("Tengo " + this.ventanasChat.size() + " ventanasChat en crearVentanaChat");
 	}
 
 	public void actualizarMensajes(Mensaje clientMessage) {
 		Long salaOrigenId = clientMessage.getSalaOrigenId();
 		SalaChat salaById = this.lobby.getSalaById(salaOrigenId);
-		VentanaChat ventanaChat = this.ventanasChat.stream()
-				.filter(ventana -> ventana.getSalaChat().equals(salaById))
-				.findAny()
-				.orElse(null);
+		VentanaChat ventanaChat = this.ventanasChat.stream().filter(ventana -> ventana.getSalaChat().equals(salaById))
+				.findAny().orElse(null);
 		ventanaChat.actualizarMensajes(clientMessage);
+	}
+
+	public VentanaChat getVentanaPorSalaChat(SalaChat salaChat) {
+		System.out.println("Tengo " + this.ventanasChat.size() + " ventanasChat en getVentanaPorSalaChat");
+		
+		return this.ventanasChat.stream().filter(ventana -> ventana.getSalaChat().getId().equals(salaChat.getId()))
+				.findAny().orElse(null);
 	}
 }

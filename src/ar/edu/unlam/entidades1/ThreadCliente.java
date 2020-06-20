@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.Set;
 
 public class ThreadCliente extends Thread {
 	private Socket socket;
@@ -27,10 +28,9 @@ public class ThreadCliente extends Thread {
 						System.out.println("Recib� respuesta. " + clientSalas.size() + " salas.");
 						this.cliente.actualizarSalas(clientSalas);
 						break;
-					case CREAR_SALA:
-						break;
 					case UNIRSE_SALA:
 						SalaChat salaChat =(SalaChat)comandoRecibido.getInfo();
+						System.out.println("Recibi la respuesta para unirme a la sala");
 						this.cliente.crearVentanaChat(salaChat);
 						break;
 					case ERROR:
@@ -40,6 +40,11 @@ public class ThreadCliente extends Thread {
 					case MENSAJE:
 						Mensaje clientMessage = (Mensaje) comandoRecibido.getInfo();
 						this.cliente.actualizarMensajes(clientMessage);
+						break;
+					case USUARIOS_SALA:
+						System.out.println("Me avisaron que hay que actualizar usuarios en sala");
+						SalaChat salaChatUsuariosSala = (SalaChat) comandoRecibido.getInfo();
+						this.cliente.actualizarUsuariosEnSala(salaChatUsuariosSala);
 						break;
 					default:
 						break;
