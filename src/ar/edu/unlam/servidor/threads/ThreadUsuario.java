@@ -57,9 +57,10 @@ public class ThreadUsuario extends Thread {
 					break;
 
 				case CREAR_SALA:
+					System.out.println("Me pidieron que cree una sala");
 					SalaChat salaChat = (SalaChat) command.getInfo();
 					String crearSalaResponse = server.lobby.crearSala(salaChat);
-
+					
 					if (crearSalaResponse.isEmpty()) {
 						responderSalas();
 					}

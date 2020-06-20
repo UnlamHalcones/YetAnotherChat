@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,7 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import ar.edu.unlam.servidor.entidades.*;
+import ar.edu.unlam.entidades.*;
 
 public class VentanaIngresoCliente extends JFrame {
 	 
@@ -30,6 +31,7 @@ public class VentanaIngresoCliente extends JFrame {
 	    private JLabel lbPuerto;
 	    private JButton btnLogin;
 	    private JButton btnCancel;
+	    private Cliente client;
 	 
 	    public VentanaIngresoCliente() {
 	    	super("Iniciar Sesion");
@@ -51,7 +53,7 @@ public class VentanaIngresoCliente extends JFrame {
 	        cs.gridy = 0;
 	        cs.gridwidth = 2;
 	        panel.add(tfUsername, cs);
-	        tfUsername.setText("marce");
+	        tfUsername.setText("noidz");
 	        
 	        tfUsername.addKeyListener(new KeyAdapter() {
 				@Override
@@ -79,7 +81,7 @@ public class VentanaIngresoCliente extends JFrame {
 	        cs.gridy = 1;
 	        cs.gridwidth = 2;
 	        panel.add(tfIp, cs);
-	        tfIp.setText("192.168.0.1");
+	        tfIp.setText("localhost");
 	        
 	        tfIp.addKeyListener(new KeyAdapter() {
 				@Override
@@ -107,7 +109,7 @@ public class VentanaIngresoCliente extends JFrame {
 	        cs.gridy = 2;
 	        cs.gridwidth = 2;
 	        panel.add(ftfPuerto, cs);
-	        ftfPuerto.setText("1080");
+	        ftfPuerto.setText("9091");
 	        
 	        ftfPuerto.addKeyListener(new KeyAdapter() {
 				@Override
@@ -164,7 +166,20 @@ public class VentanaIngresoCliente extends JFrame {
 	    public void IngresoCliente() {
 	    //public void IngresoCliente(IngresoCliente ingCli) {
 	    	JDialog ld= new JDialog();
-	    	//if (ingCli.Autenticacion(tfUsername.getText(), tfIp.getText(), Integer.valueOf(ftfPuerto.getText()))) {
+	    		try {
+					Cliente client = Cliente.getInstance();
+					client.init( tfIp.getText(), Integer.valueOf(ftfPuerto.getText()), tfUsername.getText());
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    			
 	    		//ingCli = new IngresoCliente(tfUsername.getText(), tfIp.getText(), Integer.valueOf(ftfPuerto.getText()));
                 JOptionPane.showMessageDialog(ld,
                         //"Bienvenido " + ingCli.getUserName() + "!",
@@ -172,16 +187,6 @@ public class VentanaIngresoCliente extends JFrame {
                         "Login",
                         JOptionPane.INFORMATION_MESSAGE);
                 dispose();
-                new VentanaChat().setVisible(true);
-            /*} else {
-                JOptionPane.showMessageDialog(ld,
-                        "Los datos ingresados son incorrectos!",
-                        "Login",
-                        JOptionPane.ERROR_MESSAGE);
-                tfUsername.setText("");
-                tfIp.setText("");
-                ftfPuerto.setText("1080");
-            }*/
 	    }
 	    
 	    public static void main(String[] args) {

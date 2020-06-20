@@ -21,6 +21,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import ar.edu.unlam.entidades.Cliente;
+import ar.edu.unlam.entidades.Lobby;
 import ar.edu.unlam.entidades.SalaChat;
 import ar.edu.unlam.entidades.Usuario;
 
@@ -33,17 +34,19 @@ public class VentanaLobby extends JFrame {
 	private JLabel etiqueta;
 	private JList<JButton> lista;
 	private Usuario usuario;
-	private Cliente cliente;
+	public Lobby lobby;
 
-	public VentanaLobby(Usuario usuario, Cliente cliente) {
+	public VentanaLobby(Usuario usuario) {
+		
 		super();
+		System.out.println("construyo");
 		this.usuario = usuario;
-		this.cliente = cliente;
 		this.panel = new JPanel();
 		this.scrollPane = new JScrollPane();
 		this.etiqueta = new JLabel();
 		this.lista = new JList<JButton>();
 		this.panelLista = new JPanel();
+		this.lobby = new Lobby();
 		initialize();
 	}
 
@@ -62,31 +65,7 @@ public class VentanaLobby extends JFrame {
 		this.lista.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.lista.setLayoutOrientation(JList.VERTICAL);
 
-		int y = 10;
-
-		for (Entry<Integer, SalaChat> entry : this.cliente.lobby.getSalas().entrySet()) {
-
-			SalaChat sala = entry.getValue();
-			System.out.println("pasando por la sala " + sala.getSalaId());
-
-			JButton btnSala = new JButton();
-			btnSala.setActionCommand(entry.getKey().toString());
-			btnSala.setText("Sala <" + sala.getNombreSala() + "> [" + sala.getFechaCreacion().getFecha() + " "
-					+ sala.getFechaCreacion().getHora() + "]");
-			btnSala.setHorizontalAlignment(SwingConstants.CENTER);
-			btnSala.setVerticalAlignment(SwingConstants.CENTER);
-			btnSala.setHorizontalTextPosition(SwingConstants.RIGHT);
-			btnSala.setVerticalTextPosition(SwingConstants.CENTER);
-			btnSala.setBounds(10, y, 280, 30);
-			btnSala.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					unirseAUnaSala(Integer.parseInt(e.getActionCommand().toString()));
-				}
-			});
-			lista.add(btnSala);
-			y += 35;
-		}
+		int y = mostrarSalas();
 
 		JButton btnCrearSala = new JButton();
 		btnCrearSala.setActionCommand("-1");
@@ -124,8 +103,37 @@ public class VentanaLobby extends JFrame {
 		this.setLocationRelativeTo(null);
 	}
 
+	public int mostrarSalas() {
+		int y = 10;
+
+		for (Entry<Integer, SalaChat> entry : this.lobby.getSalas().entrySet()) {
+
+			SalaChat sala = entry.getValue();
+			System.out.println("pasando por la sala " + sala.getSalaId());
+
+			JButton btnSala = new JButton();
+			btnSala.setActionCommand(entry.getKey().toString());
+			btnSala.setText("Sala <" + sala.getNombreSala() + "> [" + sala.getFechaCreacion().getFecha() + " "
+					+ sala.getFechaCreacion().getHora() + "]");
+			btnSala.setHorizontalAlignment(SwingConstants.CENTER);
+			btnSala.setVerticalAlignment(SwingConstants.CENTER);
+			btnSala.setHorizontalTextPosition(SwingConstants.RIGHT);
+			btnSala.setVerticalTextPosition(SwingConstants.CENTER);
+			btnSala.setBounds(10, y, 280, 30);
+			btnSala.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					unirseAUnaSala(Integer.parseInt(e.getActionCommand().toString()));
+				}
+			});
+			lista.add(btnSala);
+			y += 35;
+		}
+		return y;
+	}
+
 	private void crearSala() {
-		if (new VentanaCrearSala(this, this.usuario, this.cliente).actualizaSalas()) {
+		if (new VentanaCrearSala(this, this.usuario).actualizaSalas()) {
 			// En esta parte hay que actualizar el lobby
 			initialize();
 		}
@@ -134,7 +142,7 @@ public class VentanaLobby extends JFrame {
 	private void unirseAUnaSala(int idSala) {
 		if (JOptionPane.showConfirmDialog(this, "Desea unirse a la sala", "Confirmar...", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE) == 0) {
-			String mensaje = this.cliente.lobby.unirseASala(idSala, this.usuario);
+			String mensaje = this.lobby.unirseASala(idSala, this.usuario);
 			if (mensaje.isEmpty()) {
 				new VentanaChat().setVisible(true);
 			} else {
@@ -144,13 +152,5 @@ public class VentanaLobby extends JFrame {
 		}
 	}
 
-	public static void main(String[] args) {
-		try {
-			new VentanaLobby(new Usuario(1,"Pepe"), new Cliente("",9091,"Pepe")).setVisible(true);
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 }

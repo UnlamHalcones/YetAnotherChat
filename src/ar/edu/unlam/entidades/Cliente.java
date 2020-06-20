@@ -9,56 +9,68 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.Scanner;
 
+import ar.edu.unlam.cliente.ventanas.VentanaLobby;
+
 public class Cliente extends Thread {
 
 	private OutputStream outputStream;
-    private InputStream inputStream;
-    private Socket socket;
-    private ObjectOutputStream objectOutputStream;
-    private ObjectInputStream objectInputStream;
-    public Lobby lobby = new Lobby();
-    
-    public Cliente(String ip, int puerto, String userName) throws IOException, ClassNotFoundException {
+	private InputStream inputStream;
+	private Socket socket;
+	private ObjectOutputStream objectOutputStream;
+	private ObjectInputStream objectInputStream;
+	private static Cliente instance;
 
-        socket = new Socket(ip, puerto);
-        outputStream = socket.getOutputStream();
-        inputStream = socket.getInputStream();
+	public VentanaLobby ventanaLobby;
 
-        objectOutputStream = new ObjectOutputStream(outputStream);
-        objectInputStream = new ObjectInputStream(inputStream);
+	public Cliente() {
 
-        objectOutputStream.writeObject(userName);
-        Command command = (Command)objectInputStream.readObject();
+	}
 
-        if(command.getCommandType().equals(CommandType.USER)) {
-            Scanner readerFromKB = new Scanner(System.in);
-            Usuario user = (Usuario)command.getInfo();
+	public void init(String ip, int puerto, String userName) throws IOException, ClassNotFoundException {
 
-            // Levanto un hilo que va a estar recibiendo constantemente los mensaje del server
-            Thread hiloLectura = new Thread(() -> {
-            	Command newCommand = command;
-                while (socket.isConnected()) {
-                	
-                    while (!newCommand.getCommandType().equals(CommandType.DISCONNECT)) {
+		socket = new Socket(ip, puerto);
+		outputStream = socket.getOutputStream();
+		inputStream = socket.getInputStream();
+
+		objectOutputStream = new ObjectOutputStream(outputStream);
+		objectInputStream = new ObjectInputStream(inputStream);
+
+		objectOutputStream.writeObject(userName);
+		Command command = (Command) objectInputStream.readObject();
+
+		if (command.getCommandType().equals(CommandType.USER)) {
+			Scanner readerFromKB = new Scanner(System.in);
+			Usuario user = (Usuario) command.getInfo();
+			ventanaLobby = new VentanaLobby(user);
+			ventanaLobby.setVisible(true);
+		
+
+			// Levanto un hilo que va a estar recibiendo constantemente los mensaje del
+			// server
+			Thread hiloLectura = new Thread(() -> {
+				Command newCommand = command;
+				while (socket.isConnected()) {
+
+					while (!newCommand.getCommandType().equals(CommandType.DISCONNECT)) {
 						// Hago un broadcast del mensaje, excluyendo al usuario que lo envia
 						// TODO hacer el switch gigante
 						switch (newCommand.getCommandType()) {
 						case MENSAJE:
 							Mensaje clientMessage = (Mensaje) newCommand.getInfo();
-							
+
 							break;
 
 						case INFO_SALAS:
-							 Map<Integer, SalaChat> clientSalas = (Map<Integer, SalaChat>) newCommand.getInfo();
-							
-							 System.out.println("Recibí respuesta");
-							 actualizarSalas(clientSalas);
-							
+							Map<Integer, SalaChat> clientSalas = (Map<Integer, SalaChat>) newCommand.getInfo();
+
+							System.out.println("Recibí respuesta");
+							actualizarSalas(clientSalas);
+
 							break;
 						default:
 							break;
 						}
-						
+
 						try {
 							newCommand = (Command) objectInputStream.readObject();
 						} catch (ClassNotFoundException e) {
@@ -69,46 +81,45 @@ public class Cliente extends Thread {
 							e.printStackTrace();
 						}
 					}
-                }
-            });
+				}
+			});
 
-            hiloLectura.start();
-        }
+			hiloLectura.start();
+		}
+	}
 
-    }
+	public static Cliente getInstance() {
 
-    private void closeConnections(Socket socket, Scanner scanner) throws IOException {
-        scanner.close();
-        socket.close();
-    }
-    
-    public void getSalas (){
-    	Command getSalasCommand = new Command(CommandType.INFO_SALAS, null);
-    	
-    	System.out.println("Voy a pedir salas");
-    	
-    	try {
+		if (instance == null) {
+			instance = new Cliente();
+		}
+
+		return instance;
+	}
+
+	private void closeConnections(Socket socket, Scanner scanner) throws IOException {
+		scanner.close();
+		socket.close();
+	}
+
+	public void getSalas() {
+		Command getSalasCommand = new Command(CommandType.INFO_SALAS, null);
+
+		System.out.println("Voy a pedir salas");
+
+		try {
 			objectOutputStream.writeObject(getSalasCommand);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }
-    
-    public void actualizarSalas(Map<Integer, SalaChat>  salasChat)
-    {
-    	System.out.println("Actualizo salas");
-    	lobby.setSalas(salasChat);
-    }
-    
+	}
 
-    public static void main(String[] args) {
-        try {
-            new Cliente("localhost", Integer.valueOf(args[0]), args[1]);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+	public void actualizarSalas(Map<Integer, SalaChat> salasChat) {
+		System.out.println("Actualizo salas");
+		this.ventanaLobby.lobby.setSalas(salasChat);
+		
+		this.ventanaLobby.mostrarSalas();
+	}
 
 }

@@ -9,6 +9,7 @@ public class Lobby {
 
 	private ArrayList<Usuario> usuarios;
 	private Map<Integer, SalaChat> salas;
+	public Integer contadorSalas = 0;
 
 	public Lobby() {
 
@@ -53,6 +54,8 @@ public class Lobby {
 	}
 
 	public String crearSala(SalaChat sala) {
+		
+		System.out.println("Creando la sala en el server");
 
 		if (salas.values().stream().filter(s -> s.nombreSala == sala.nombreSala).count() > 0)
 			return "Ya existe una sala con ese nombre";
@@ -60,11 +63,11 @@ public class Lobby {
 		if (sala.creador.getCantidadSalasConectadas() >= 3)
 			return "Superó el maximo de salas conectado";
 
-		Integer maxKey = Collections.max(salas.keySet()) + 1;
+		//Integer maxKey = Collections.max(salas.keySet()) + 1;
 
-		sala.salaId = maxKey;
+		sala.salaId = ++contadorSalas;
 
-		salas.put(maxKey, sala);
+		salas.put(contadorSalas, sala);
 
 		return "";
 	}
@@ -77,9 +80,7 @@ public class Lobby {
 		if (user.getCantidadSalasConectadas() >= 3)
 			return "Superó el maximo de salas conectado";
 
-		Integer maxKey = Collections.max(salas.keySet()) + 1;
-
-		salas.put(maxKey, new SalaChat(maxKey, nombreSala, cantidadUsuarios, user));
+		salas.put(++contadorSalas, new SalaChat(contadorSalas, nombreSala, cantidadUsuarios, user));
 
 		return "";
 	}

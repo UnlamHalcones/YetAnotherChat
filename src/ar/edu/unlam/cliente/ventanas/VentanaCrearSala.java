@@ -29,10 +29,10 @@ public class VentanaCrearSala extends JDialog {
 		initialize();
 	}
 
-	public VentanaCrearSala(JFrame padre, Usuario usuario, Cliente cliente) {
+	public VentanaCrearSala(JFrame padre, Usuario usuario) {
 		super(padre, "Crear sala...", true);
 		this.usuario = usuario;
-		this.cliente = cliente;
+		this.cliente = Cliente.getInstance();
 		this.actualiza = false;
 		initialize();
 	}
@@ -111,7 +111,7 @@ public class VentanaCrearSala extends JDialog {
 					"Atencion...", JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
 		} else if (JOptionPane.showConfirmDialog(this, "Desea crear la sala", "Confirmar...",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
-			String mensaje = this.cliente.lobby.crearSala(new SalaChat(0, nombreDeLaSala.getText(),
+			String mensaje = this.cliente.ventanaLobby.lobby.crearSala(new SalaChat(0, nombreDeLaSala.getText(),
 					Integer.parseInt(cantidadParticipantes.getText()), this.usuario));
 			if (mensaje.isEmpty()) {
 				this.actualiza = true;
