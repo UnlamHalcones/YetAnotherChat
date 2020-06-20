@@ -32,10 +32,9 @@ public class ThreadCliente extends Thread {
 				case INFO_SALAS:
 					Map<Integer, SalaChat> clientSalas = (Map<Integer, SalaChat>) newCommand.getInfo();
 
-					/*
-					 * System.out.println("Soy " + this.user.getUserNickname() +
-					 * " y recibí respuesta. " + clientSalas.size() + " salas.");
-					 */
+					
+					  System.out.println("Recibí respuesta. " + clientSalas.size() + " salas.");
+					 
 					this.cliente.actualizarSalas(clientSalas);
 
 					break;

@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 import ar.edu.unlam.cliente.ventanas.VentanaLobby;
-import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
 public class Cliente extends Thread {
 
@@ -36,11 +35,8 @@ public class Cliente extends Thread {
 
 		objectOutputStream = new ObjectOutputStream(outputStream);
 		
-		
 		objectInputStream = new ObjectInputStream(inputStream);
-		
-
-
+	
 		objectOutputStream.writeObject(userName);
 		Command command = (Command) objectInputStream.readObject();
 
