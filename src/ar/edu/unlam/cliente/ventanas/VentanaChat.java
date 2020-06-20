@@ -55,6 +55,17 @@ public class VentanaChat extends JFrame {
 
 		addWindowListener(new WindowAdapter() {
 			@Override
+			public void windowClosing(WindowEvent e) {
+				int confirm = JOptionPane.showOptionDialog(splitPane, "¿Está seguro que desea salir de la sala?",
+						"Salir de sala", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+				if (confirm == JOptionPane.YES_OPTION) {
+					// Desconectar del servidor
+					setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				}else {
+					setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				}
+			}
+			@Override
 			public void windowOpened(WindowEvent arg0) {
 				textArea.requestFocus();
 			}
