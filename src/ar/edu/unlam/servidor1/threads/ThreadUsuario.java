@@ -52,18 +52,24 @@ public class ThreadUsuario extends Thread {
 						System.out.println("Mensaje recibido");
 						Mensaje clientMessage = (Mensaje) command.getInfo();
 						command = server.procesarMensaje(clientMessage);
-
 						break;
+						
 						/*if(clientMessage.getUserDest() == null) {
-							server.broadcast(clientMessage, this);
+						server.broadcast(clientMessage, this);
 						} else {
-							server.sendMessageTo(clientMessage);
+						server.sendMessageTo(clientMessage);
 						}
 						break;*/
-					  /*case DISCONNECT:
-					  	server.desconectarUsuario();
-					    isConnected = false;
-					  	break;*/
+						/*case DISCONNECT:
+				  		server.desconectarUsuario();
+				    	isConnected = false;
+				  		break;*/
+						
+					case EXPORT_LOG:
+						Long salaID = (Long) command.getInfo();
+						command = server.exportarLog(salaID,this.usuario.getId());
+						break;
+						
 
 					default:
 						break;

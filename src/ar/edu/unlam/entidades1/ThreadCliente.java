@@ -28,6 +28,8 @@ public class ThreadCliente extends Thread {
 						System.out.println("Recib� respuesta. " + clientSalas.size() + " salas.");
 						this.cliente.actualizarSalas(clientSalas);
 						break;
+					case CREAR_SALA:
+						break;
 					case UNIRSE_SALA:
 						SalaChat salaChat =(SalaChat)comandoRecibido.getInfo();
 						System.out.println("Recibi la respuesta para unirme a la sala");
@@ -45,6 +47,11 @@ public class ThreadCliente extends Thread {
 						System.out.println("Me avisaron que hay que actualizar usuarios en sala");
 						SalaChat salaChatUsuariosSala = (SalaChat) comandoRecibido.getInfo();
 						this.cliente.actualizarUsuariosEnSala(salaChatUsuariosSala);
+						break;
+					case EXPORT_LOG:
+						byte[] log = (byte[]) comandoRecibido.getInfo();
+						System.out.println(new String(log));
+						this.cliente.exportarLog(log);
 						break;
 					default:
 						break;

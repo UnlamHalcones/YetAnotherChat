@@ -10,5 +10,6 @@ public enum CommandType {
     DISCONNECT,
     USER,
     LOGIN,
+    EXPORT_LOG,
     USUARIOS_SALA;
 }

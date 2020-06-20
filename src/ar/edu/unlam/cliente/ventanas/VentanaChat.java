@@ -28,7 +28,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Set;
 import java.util.TimeZone;
 
 import ar.edu.unlam.entidades1.*;
@@ -123,6 +122,13 @@ public class VentanaChat extends JFrame {
 				selectAllTextoTextField(textField);
 			}
 		});
+		
+		btnExportar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Cliente.getInstance().solicitarLog(salaChat.getId());
+			}
+		});
+
 
 		textField.setHorizontalAlignment(SwingConstants.LEFT);
 		textField.setToolTipText("Escriba su mensaje para enviar");
@@ -158,8 +164,6 @@ public class VentanaChat extends JFrame {
 		splitPane.setDividerLocation(175);
 		splitPane.setTopComponent(izqPanel);
 		splitPane.setBottomComponent(derPanel);
-		
-		mostrarUsuariosEnSala();
 
 		DefaultMutableTreeNode abuelo = new DefaultMutableTreeNode("Usuarios Conectados");
 		DefaultTreeModel modelo = new DefaultTreeModel(abuelo);

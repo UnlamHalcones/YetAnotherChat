@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -55,7 +56,6 @@ public class Cliente extends Thread {
                         "Login",
                         JOptionPane.ERROR_MESSAGE);
 		}
-		mostrarLobby();
 	}
 
 	public static Cliente getInstance() {
@@ -144,7 +144,19 @@ public class Cliente extends Thread {
 	public void actualizarMensajes(Mensaje clientMessage) {
 		this.ventanaLobby.actualizarMensajes(clientMessage);
 	}
-
+	
+	
+	public void solicitarLog(Long SalaID) {
+		Command command = new Command(CommandType.EXPORT_LOG, SalaID); 
+		this.sendCommand(command);
+	}
+	
+	public void exportarLog(byte[] log) { // path harcodeado
+		
+		ManejadorArchivos.exportarLogs(log);
+		
+	}
+	
 	public boolean isLogged() {
 		return logged;
 	}
@@ -160,4 +172,6 @@ public class Cliente extends Thread {
 		}
 		
 	}
+	
+	
 }

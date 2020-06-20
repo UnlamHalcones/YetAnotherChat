@@ -8,16 +8,20 @@ import java.util.ArrayList;
 
 public abstract class ManejadorArchivos {
 
-	public void guardarLogMensajes(String logMensajes) {
+	public static void exportarLogs(byte[] data) {
 		
-		String pathDefinitivo = File.separator + "registro.csv";
+		String log = new String(data);
+		
+		String fileName = log.substring(0, log.indexOf('\n'));
+		
+		String path = "Logs/" + fileName + ".log";
 		
 		BufferedWriter out;
 
 		try {
 			
-			out = new BufferedWriter(new FileWriter(pathDefinitivo, true));
-			out.write(logMensajes);
+			out = new BufferedWriter(new FileWriter(path, true));
+			out.write(new String(log.substring('\n'-3)));
 			out.close();
 			}
 		
@@ -25,7 +29,7 @@ public abstract class ManejadorArchivos {
 			
 		// error processing code
 
-		System.out.println("Error al leer el archivo");
+		System.out.println("Error al leer el archivo. ex: " + e.getMessage());
 
 		}
 	}

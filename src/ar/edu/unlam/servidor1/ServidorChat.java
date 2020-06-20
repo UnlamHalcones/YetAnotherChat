@@ -6,6 +6,8 @@ import ar.edu.unlam.servidor1.threads.ThreadUsuario;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.*;
 
 public class ServidorChat {
@@ -19,7 +21,7 @@ public class ServidorChat {
     public ServidorChat(int port) {
         this.port = port;
         this.usuariosInServer = new HashSet<>();
-        this.salasInServer = new ArrayList<>();
+        this.salasInServer = new ArrayList<>();        
     }
 
 	public void execute() {
@@ -235,6 +237,35 @@ public class ServidorChat {
     private Command generarComandoError(String mensajeError) {
         System.err.println(mensajeError);
         return new Command(CommandType.ERROR, mensajeError);
+    }
+    
+    
+    public Command exportarLog(Long salaID, Long userID) {
+    	
+    	SalaChat sala = existeSalaConId(salaID);
+    	
+    	if(sala==null)
+    		return generarComandoError("No se encontro la sala");
+    	    	
+    	String log = salaID+"_"+sala.getNombreSala()+"\n"+"Mensajes de la sala: " + sala.getNombreSala() + "["+ salaID + "]\n";
+    	
+    	for (Mensaje mensaje : sala.getMensajes()) {
+			
+    		Date msjDate = new Date(mensaje.getInstantCreacion().toEpochMilli());
+    		
+    		
+    		if(mensaje.getUserDestinoId() == null || mensaje.getUserDestinoId() == userID) {
+    			log+=msjDate.getHours()+":"+msjDate.getMinutes()+":"+msjDate.getSeconds()+". Usuario: "+mensaje.getUserNameCreador()+". Mensaje: "+mensaje.getData()+"\n";    			
+    		}
+    		else if(mensaje.getUserDestinoId() != null && (mensaje.getUserCreadorId() == userID || mensaje.getUserDestinoId() == userID )) {    			
+    			log+=msjDate.getHours()+":"+msjDate.getMinutes()+":"+msjDate.getSeconds()+". Usuario Origen: "+mensaje.getUserNameCreador()+" a Usuario Destino: "+ mensaje.getUserNameDestino() 
+    			+ ". Mensaje: " + mensaje.getData()+"\n";
+    		}
+		}
+    	log+= "\n";
+    	
+    	System.out.println(new String(log.getBytes()));
+    	return new Command(CommandType.EXPORT_LOG,log.getBytes());
     }
 
     private Usuario existeUsuarioConId(Long id) {

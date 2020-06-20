@@ -36,6 +36,14 @@ public class Mensaje implements Serializable {
         this.instantCreacion = instantCreacion;
     }
 
+    public Long getUserCreadorId() {
+        return userCreador.getId();
+    }
+
+    public Long getUserDestinoId() {
+        return userDestino.getId();
+    }
+    
     public Usuario getUserCreador() {
         return userCreador;
     }
@@ -43,10 +51,18 @@ public class Mensaje implements Serializable {
     public void setUserCreador(Usuario userCreador) {
         this.userCreador = userCreador;
     }
+    
+    public String getUserNameCreador() {
+        return userCreador.getUserName();
+    }
 
+    public String getUserNameDestino() {
+        return userDestino.getUserName();
+    }
     public Usuario getUserDestino() {
         return userDestino;
     }
+
 
     public void setUserDestino(Usuario userDestino) {
         this.userDestino = userDestino;
