@@ -1,11 +1,13 @@
 package ar.edu.unlam.entidades1;
 
+import ar.edu.unlam.cliente.ventanas.VentanaChat;
 import ar.edu.unlam.cliente.ventanas.VentanaLobby;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Cliente extends Thread {
 
@@ -30,16 +32,16 @@ public class Cliente extends Thread {
 		inputStream = socket.getInputStream();
 
 		objectOutputStream = new ObjectOutputStream(outputStream);
-		
+
 		objectInputStream = new ObjectInputStream(inputStream);
-	
+
 		objectOutputStream.writeObject(userName);
 		Command command = (Command) objectInputStream.readObject();
 
 		if (command.getCommandType().equals(CommandType.USER)) {
 			Scanner readerFromKB = new Scanner(System.in);
 			this.user = (Usuario) command.getInfo();
-			ThreadCliente threadCliente = new ThreadCliente(objectInputStream, socket,this);
+			ThreadCliente threadCliente = new ThreadCliente(objectInputStream, socket, this);
 			threadCliente.start();
 		}
 	}
@@ -125,5 +127,17 @@ public class Cliente extends Thread {
 
 	public void actualizarMensajes(Mensaje clientMessage) {
 		this.ventanaLobby.actualizarMensajes(clientMessage);
+	}
+
+	public void actualizarUsuariosEnSala(SalaChat sala) {
+		VentanaChat ventanaChat = this.ventanaLobby.getVentanaPorSalaChat(sala);
+
+		if (ventanaChat != null) {
+			ventanaChat.actualizarUsuarios(sala.getUsuariosInSala());
+		}else
+		{
+			System.out.println("Tengo que actualizar usuarios pero no encontre la ventana");
+		}
+		
 	}
 }

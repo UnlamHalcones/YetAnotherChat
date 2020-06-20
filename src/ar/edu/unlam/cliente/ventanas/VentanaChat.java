@@ -28,6 +28,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TimeZone;
 
 import ar.edu.unlam.entidades1.*;
@@ -156,6 +157,8 @@ public class VentanaChat extends JFrame {
 		splitPane.setDividerLocation(175);
 		splitPane.setTopComponent(izqPanel);
 		splitPane.setBottomComponent(derPanel);
+		
+		mostrarUsuariosEnSala();
 
 		DefaultMutableTreeNode abuelo = new DefaultMutableTreeNode("Usuarios Conectados");
 		DefaultTreeModel modelo = new DefaultTreeModel(abuelo);
@@ -238,5 +241,19 @@ public class VentanaChat extends JFrame {
 
 	public void actualizarMensajes(Mensaje clientMessage) {
 		this.agregarMensajeTextAreaLocal(clientMessage);
+	}
+
+	public void actualizarUsuarios(Set<Usuario> usuariosInSala) {
+		this.salaChat.setUsuariosInSala(usuariosInSala);
+		
+		this.mostrarUsuariosEnSala();
+	}
+
+	private void mostrarUsuariosEnSala() {
+		System.out.println("Actualizo los usuarios en la sala");
+		for (Usuario usuario : salaChat.getUsuariosInSala()) {
+			System.out.println(usuario.getUserName() + " está en la sala");
+		}
+		
 	}
 }
