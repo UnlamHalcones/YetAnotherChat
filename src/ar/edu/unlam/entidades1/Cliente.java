@@ -57,6 +57,7 @@ public class Cliente extends Thread {
                         "Login",
                         JOptionPane.ERROR_MESSAGE);
 		}
+		mostrarLobby();
 	}
 
 	public static Cliente getInstance() {
