@@ -126,6 +126,14 @@ public class ServidorChat {
             }
         }
     }
+    
+    public synchronized void broadcastSalas(Command command, ThreadUsuario excludeUser) {
+    	Map<Integer, SalaChat> clientSalas = (Map<Integer, SalaChat>) command.getInfo();
+        for (ThreadUsuario aUser : userThreads) {
+        	System.out.println("Le voy a avisar a " + aUser.getUsuario().getUserNickname() + " que tiene que tener " + clientSalas.size() + " salas.");
+            aUser.sendCommand(command);
+        }
+    }
 
     private void sendErrorToUser(Integer userId, String errorMessage) {
         Mensaje mensajeParaCliente = new Mensaje(userId, null, errorMessage);

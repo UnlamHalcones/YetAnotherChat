@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.ImageIcon;
@@ -106,6 +107,8 @@ public class VentanaLobby extends JFrame {
 	public int mostrarSalas() {
 		int y = 10;
 
+		System.out.println("Tengo " + this.lobby.getSalas().size() + " salas.");
+		
 		for (Entry<Integer, SalaChat> entry : this.lobby.getSalas().entrySet()) {
 
 			SalaChat sala = entry.getValue();
@@ -149,6 +152,36 @@ public class VentanaLobby extends JFrame {
 				JOptionPane.showConfirmDialog(this, mensaje, "Atencion...", JOptionPane.OK_OPTION,
 						JOptionPane.ERROR_MESSAGE);
 			}
+		}
+	}
+
+	public void mostrarSalas(Map<Integer, SalaChat> salasChat) {
+		int y = 10;
+
+		System.out.println("Tengo " + this.lobby.getSalas().size() + " salas.");
+		
+		for (Entry<Integer, SalaChat> entry : this.lobby.getSalas().entrySet()) {
+
+			SalaChat sala = entry.getValue();
+			System.out.println("pasando por la sala " + sala.getSalaId());
+
+			JButton btnSala = new JButton();
+			btnSala.setActionCommand(entry.getKey().toString());
+			btnSala.setText("Sala <" + sala.getNombreSala() + "> [" + sala.getFechaCreacion().getFecha() + " "
+					+ sala.getFechaCreacion().getHora() + "]");
+			btnSala.setHorizontalAlignment(SwingConstants.CENTER);
+			btnSala.setVerticalAlignment(SwingConstants.CENTER);
+			btnSala.setHorizontalTextPosition(SwingConstants.RIGHT);
+			btnSala.setVerticalTextPosition(SwingConstants.CENTER);
+			btnSala.setBounds(10, y, 280, 30);
+			btnSala.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					unirseAUnaSala(Integer.parseInt(e.getActionCommand().toString()));
+				}
+			});
+			lista.add(btnSala);
+			y += 35;
 		}
 	}
 

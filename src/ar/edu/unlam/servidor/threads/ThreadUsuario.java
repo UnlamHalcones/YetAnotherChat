@@ -93,19 +93,13 @@ public class ThreadUsuario extends Thread {
 	}
 
 	private void responderSalas() {
-		
-		Map<Integer, SalaChat> auxSalas = new HashMap<Integer, SalaChat>();
 
-		auxSalas.put(0, new SalaChat(0, "General", 15));
-		auxSalas.put(1, new SalaChat(1, "Sala 1", 10));
-		auxSalas.put(2, new SalaChat(2, "Sala 2", 10));
-		auxSalas.put(3, new SalaChat(3, "Sala 3", 10));
-		auxSalas.put(4, new SalaChat(4, "Sala 4", 10));
-		
-		Command responseCommand = new Command(CommandType.INFO_SALAS, auxSalas);
-		
 		System.out.println("respondo salas");
-		server.broadcast(responseCommand, null);
+		System.out.println("Tengo " + server.lobby.getSalas().size() + " salas en el server");
+		Command responseCommand = new Command(CommandType.INFO_SALAS, server.getLobby().getSalas());
+		
+		
+		server.broadcastSalas(responseCommand, null);
 	}
 
 	/**

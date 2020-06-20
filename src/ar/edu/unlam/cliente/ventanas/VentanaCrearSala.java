@@ -17,7 +17,7 @@ import ar.edu.unlam.entidades.SalaChat;
 import ar.edu.unlam.entidades.Usuario;
 
 public class VentanaCrearSala extends JDialog {
-	
+
 	private static final long serialVersionUID = -2013488546574761682L;
 	private JTextField nombreDeLaSala;
 	private JTextField cantidadParticipantes;
@@ -111,8 +111,10 @@ public class VentanaCrearSala extends JDialog {
 					"Atencion...", JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
 		} else if (JOptionPane.showConfirmDialog(this, "Desea crear la sala", "Confirmar...",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
-			String mensaje = this.cliente.ventanaLobby.lobby.crearSala(new SalaChat(0, nombreDeLaSala.getText(),
+			this.cliente.crearSalaEnServer(new SalaChat(0, nombreDeLaSala.getText(),
 					Integer.parseInt(cantidadParticipantes.getText()), this.usuario));
+
+			String mensaje = "";
 			if (mensaje.isEmpty()) {
 				this.actualiza = true;
 				cerrarVentana();

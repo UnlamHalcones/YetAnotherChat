@@ -31,8 +31,6 @@ public class VentanaIngresoCliente extends JFrame {
 	    private JLabel lbPuerto;
 	    private JButton btnLogin;
 	    private JButton btnCancel;
-	    private Cliente client;
-	 
 	    public VentanaIngresoCliente() {
 	    	super("Iniciar Sesion");
 
@@ -169,6 +167,7 @@ public class VentanaIngresoCliente extends JFrame {
 	    		try {
 					Cliente client = Cliente.getInstance();
 					client.init( tfIp.getText(), Integer.valueOf(ftfPuerto.getText()), tfUsername.getText());
+					client.mostrarLobby();
 				} catch (NumberFormatException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

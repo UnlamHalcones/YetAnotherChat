@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import ar.edu.unlam.cliente.ventanas.VentanaLobby;
+import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
 public class Cliente extends Thread {
 
@@ -19,7 +20,7 @@ public class Cliente extends Thread {
 	private ObjectOutputStream objectOutputStream;
 	private ObjectInputStream objectInputStream;
 	private static Cliente instance;
-
+	private Usuario user;
 	public VentanaLobby ventanaLobby;
 
 	public Cliente() {
@@ -30,61 +31,70 @@ public class Cliente extends Thread {
 
 		socket = new Socket(ip, puerto);
 		outputStream = socket.getOutputStream();
+
 		inputStream = socket.getInputStream();
 
 		objectOutputStream = new ObjectOutputStream(outputStream);
+		
+		
 		objectInputStream = new ObjectInputStream(inputStream);
+		
+
 
 		objectOutputStream.writeObject(userName);
 		Command command = (Command) objectInputStream.readObject();
 
 		if (command.getCommandType().equals(CommandType.USER)) {
 			Scanner readerFromKB = new Scanner(System.in);
-			Usuario user = (Usuario) command.getInfo();
-			ventanaLobby = new VentanaLobby(user);
-			ventanaLobby.setVisible(true);
-		
+			this.user = (Usuario) command.getInfo();
+			
+			
+			ThreadCliente threadCliente = new ThreadCliente(objectInputStream, socket,this);
+			threadCliente.start();
 
 			// Levanto un hilo que va a estar recibiendo constantemente los mensaje del
 			// server
-			Thread hiloLectura = new Thread(() -> {
-				Command newCommand = command;
+			/*Thread hiloLectura = new Thread(() -> {
+
 				while (socket.isConnected()) {
+					try {
+						Command newCommand = (Command) objectInputStream.readObject();
 
-					while (!newCommand.getCommandType().equals(CommandType.DISCONNECT)) {
-						// Hago un broadcast del mensaje, excluyendo al usuario que lo envia
-						// TODO hacer el switch gigante
-						switch (newCommand.getCommandType()) {
-						case MENSAJE:
-							Mensaje clientMessage = (Mensaje) newCommand.getInfo();
+						while (!newCommand.getCommandType().equals(CommandType.DISCONNECT)) {
+							// Hago un broadcast del mensaje, excluyendo al usuario que lo envia
+							// TODO hacer el switch gigante
+							switch (newCommand.getCommandType()) {
+							case MENSAJE:
+								Mensaje clientMessage = (Mensaje) newCommand.getInfo();
 
-							break;
+								break;
 
-						case INFO_SALAS:
-							Map<Integer, SalaChat> clientSalas = (Map<Integer, SalaChat>) newCommand.getInfo();
+							case INFO_SALAS:
+								Map<Integer, SalaChat> clientSalas = (Map<Integer, SalaChat>) newCommand.getInfo();
 
-							System.out.println("Recibí respuesta");
-							actualizarSalas(clientSalas);
+								System.out.println("Soy " + this.user.getUserNickname() + " y recibí respuesta. "
+										+ clientSalas.size() + " salas.");
+								actualizarSalas(clientSalas);
 
-							break;
-						default:
-							break;
+								break;
+							default:
+								break;
+							}
+							
+							//newCommand = (Command) objectInputStream.readObject();
+
 						}
-
-						try {
-							newCommand = (Command) objectInputStream.readObject();
-						} catch (ClassNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 				}
-			});
+			});*/
 
-			hiloLectura.start();
+			
 		}
 	}
 
@@ -115,11 +125,30 @@ public class Cliente extends Thread {
 		}
 	}
 
+	public void crearSalaEnServer(SalaChat sala) {
+		Command crearSalaCommand = new Command(CommandType.CREAR_SALA, sala);
+
+		System.out.println("Voy a pedir crear sala");
+
+		try {
+			objectOutputStream.writeObject(crearSalaCommand);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void actualizarSalas(Map<Integer, SalaChat> salasChat) {
-		System.out.println("Actualizo salas");
+		//System.out.println("Soy " + user.getUserNickname() + " y me mandaron a actualizar salas.");
 		this.ventanaLobby.lobby.setSalas(salasChat);
-		
-		this.ventanaLobby.mostrarSalas();
+
+		this.ventanaLobby.mostrarSalas(salasChat);
+	}
+
+	public void mostrarLobby() {
+		ventanaLobby = new VentanaLobby(this.user);
+		ventanaLobby.setVisible(true);
+		this.getSalas();
 	}
 
 }
