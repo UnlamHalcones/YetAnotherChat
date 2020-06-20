@@ -60,7 +60,7 @@ public class VentanaChat extends JFrame {
 						"Salir de sala", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 				if (confirm == JOptionPane.YES_OPTION) {
 					// Desconectar del servidor
-					setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				}else {
 					setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 				}
