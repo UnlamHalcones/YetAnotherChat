@@ -8,23 +8,23 @@ public class Mensaje implements Serializable {
 
     private static final long serialVersionUID = -5159387314389978126L;
     private Instant instantCreacion;
-    private Long userCreadorId;
-    private Long userDestinoId;
+    private Usuario userCreador;
+    private Usuario userDestino;
     private Long salaOrigenId;
     private String data;
     
 
-    public Mensaje(Long userCreadorId, Long userDestinoId, Long salaOrigenId, String data) {
+    public Mensaje(Usuario userCreador, Usuario userDestino, Long salaOrigenId, String data) {
         this.instantCreacion = Instant.now();
-        this.userCreadorId = userCreadorId;
-        this.userDestinoId = userDestinoId;
+        this.userCreador = userCreador;
+        this.userDestino = userDestino;
         this.salaOrigenId = salaOrigenId;
         this.data = data;
     }
 
-    public Mensaje(Long userCreadorId, Long salaOrigenId, String data) {
+    public Mensaje(Usuario userCreador, Long salaOrigenId, String data) {
         this.instantCreacion = Instant.now();
-        this.userCreadorId = userCreadorId;
+        this.userCreador = userCreador;
         this.salaOrigenId = salaOrigenId;
         this.data = data;
     }
@@ -38,19 +38,19 @@ public class Mensaje implements Serializable {
     }
 
     public Long getUserCreadorId() {
-        return userCreadorId;
-    }
-
-    public void setUserCreadorId(Long userCreadorId) {
-        this.userCreadorId = userCreadorId;
+        return userCreador.getId();
     }
 
     public Long getUserDestinoId() {
-        return userDestinoId;
+        return userDestino.getId();
+    }
+    
+    public String getUserNameCreador() {
+        return userCreador.getUserName();
     }
 
-    public void setUserDestinoId(Long userDestinoId) {
-        this.userDestinoId = userDestinoId;
+    public String getUserNameDestino() {
+        return userDestino.getUserName();
     }
 
     public Long getSalaOrigenId() {
@@ -75,14 +75,14 @@ public class Mensaje implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Mensaje mensaje = (Mensaje) o;
         return Objects.equals(instantCreacion, mensaje.instantCreacion) &&
-                Objects.equals(userCreadorId, mensaje.userCreadorId) &&
-                Objects.equals(userDestinoId, mensaje.userDestinoId) &&
+                Objects.equals(userCreador, mensaje.userCreador) &&
+                Objects.equals(userDestino, mensaje.userDestino) &&
                 Objects.equals(salaOrigenId, mensaje.salaOrigenId) &&
                 Objects.equals(data, mensaje.data);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(instantCreacion, userCreadorId, userDestinoId, salaOrigenId, data);
+        return Objects.hash(instantCreacion, userCreador, userDestino, salaOrigenId, data);
     }
 }

@@ -1,0 +1,12 @@
+        
+        
+        
+        
+        Usuario testUser = new Usuario((long) 1, "testuser");
+        this.usuariosInServer.add(testUser);
+        this.salasInServer.add(new SalaChat((long) 1, "test", testUser));
+        unirserASala((long) 1 , testUser);
+        
+        procesarMensaje(new Mensaje(testUser,testUser, (long) 1, "mensaje 1"));
+        procesarMensaje(new Mensaje(testUser,testUser, (long) 1, "mensaje 2"));
+        procesarMensaje(new Mensaje(testUser,testUser, (long) 1, "mensaje 3"));

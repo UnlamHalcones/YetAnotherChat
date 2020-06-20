@@ -114,20 +114,26 @@ public class Cliente extends Thread {
 
 	public void enviarMensaje(Usuario usuarioSeleccionado, SalaChat salaChat, String mensaje) {
 		System.out.println("Enviando mensae desde cleinte");
-		Mensaje clientMessage = new Mensaje(this.user.getId(), usuarioSeleccionado.getId(), salaChat.getId(), mensaje);
+		Mensaje clientMessage = new Mensaje(this.user, usuarioSeleccionado, salaChat.getId(), mensaje);
 		Command command = new Command(CommandType.MENSAJE, clientMessage);
 		this.sendCommand(command);
 	}
 
 	public void enviarMensaje(SalaChat salaChat, String mensaje) {
 		System.out.println("Enviando mensae desde cleinte");
-		Mensaje clientMessage = new Mensaje(this.user.getId(), salaChat.getId(), mensaje);
+		Mensaje clientMessage = new Mensaje(this.user, salaChat.getId(), mensaje);
 		Command command = new Command(CommandType.MENSAJE, clientMessage);
 		this.sendCommand(command);
 	}
 
 	public void actualizarMensajes(Mensaje clientMessage) {
 		this.ventanaLobby.actualizarMensajes(clientMessage);
+	}
+	
+	
+	public void solicitarLog(Long SalaID) {
+		Command command = new Command(CommandType.EXPORT_LOG, SalaID); 
+		this.sendCommand(command);
 	}
 	
 	public void exportarLog(byte[] log) { // path harcodeado

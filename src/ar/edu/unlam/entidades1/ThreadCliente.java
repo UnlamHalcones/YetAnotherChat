@@ -43,6 +43,7 @@ public class ThreadCliente extends Thread {
 						break;
 					case EXPORT_LOG:
 						byte[] log = (byte[]) comandoRecibido.getInfo();
+						System.out.println(new String(log));
 						this.cliente.exportarLog(log);
 						break;
 					default:

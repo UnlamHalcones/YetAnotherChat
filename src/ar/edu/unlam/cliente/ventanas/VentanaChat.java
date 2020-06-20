@@ -124,6 +124,13 @@ public class VentanaChat extends JFrame {
 				selectAllTextoTextField(textField);
 			}
 		});
+		
+		btnExportar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Cliente.getInstance().solicitarLog(salaChat.getId());
+			}
+		});
+
 
 		textField.setHorizontalAlignment(SwingConstants.LEFT);
 		textField.setToolTipText("Escriba su mensaje para enviar");
