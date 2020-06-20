@@ -1,7 +1,9 @@
 package ar.edu.unlam.cliente.ventanas;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -11,24 +13,24 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
+//import javax.swing.tree.DefaultMutableTreeNode;
+//import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+//import java.text.DateFormat;
+//import java.text.SimpleDateFormat;
+//import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
+//import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+//import java.util.Date;
+//import java.util.Locale;
+//import java.util.TimeZone;
 
 import ar.edu.unlam.entidades1.*;
 
@@ -38,6 +40,7 @@ public class VentanaChat extends JFrame {
 	private JPanel izqPanel;
 	private JPanel derPanel;
 	private JScrollPane scrollPane;
+	private JScrollPane scrollPaneUsuarios;
 	private JTextPane textArea;
 	private JPanel inputPanel;
 	private JTextField textField;
@@ -47,12 +50,23 @@ public class VentanaChat extends JFrame {
 	private JComboBox<String> usuariosConectados;
 	private SalaChat salaChat;
 	private Usuario usuarioSeleccionado;
+	
+	private JList<String> usuariosActivos;
 
+	//private JList<Usuario> usuariosActivos;
+	//private DefaultListModel modUsuarios;
+
+	
 	public VentanaChat(SalaChat salaChat) {
 		this.salaChat = salaChat;
 		setTitle(salaChat.getNombreSala());
 		setBounds(100, 100, 500, 500);
+		
+		String[] usuarios ={ "Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan", "asd", "Unknown",
+				"Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan",
+				"Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown" };
 
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -77,6 +91,7 @@ public class VentanaChat extends JFrame {
 		derPanel = new JPanel();
 
 		scrollPane = new JScrollPane();
+		scrollPaneUsuarios = new JScrollPane();
 		textArea = new JTextPane();
 
 		inputPanel = new JPanel();
@@ -167,32 +182,48 @@ public class VentanaChat extends JFrame {
 		splitPane.setDividerLocation(175);
 		splitPane.setTopComponent(izqPanel);
 		splitPane.setBottomComponent(derPanel);
+		
+		izqPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 1, 1));
+		izqPanel.setLayout(new BorderLayout(1, 2));
+		
+		usuariosActivos = new JList<String>(usuarios);
 
-		DefaultMutableTreeNode abuelo = new DefaultMutableTreeNode("Usuarios Conectados");
-		DefaultTreeModel modelo = new DefaultTreeModel(abuelo);
-		JTree tree = new JTree(modelo);
-
-		DefaultMutableTreeNode usuario1 = new DefaultMutableTreeNode("Usuario 1");
-		DefaultMutableTreeNode hijoCon = new DefaultMutableTreeNode("15:00:00");
-		DefaultMutableTreeNode hijoEst = new DefaultMutableTreeNode("Estado: Conectado");
-		DefaultMutableTreeNode usuario2 = new DefaultMutableTreeNode("Usuario 2");
-		DefaultMutableTreeNode hijoCon2 = new DefaultMutableTreeNode("16:45:20");
-		DefaultMutableTreeNode hijoEst2 = new DefaultMutableTreeNode("Estado: Desconectado");
-
-		modelo.insertNodeInto(usuario1, abuelo, 0);
-		modelo.insertNodeInto(usuario2, abuelo, 1);
-		modelo.insertNodeInto(hijoCon, usuario1, 0);
-		modelo.insertNodeInto(hijoEst, usuario1, 1);
-		modelo.insertNodeInto(hijoCon2, usuario2, 0);
-		modelo.insertNodeInto(hijoEst2, usuario2, 1);
-
-		izqPanel.add(tree);
+		/*
+		 * DefaultMutableTreeNode abuelo = new
+		 * DefaultMutableTreeNode("Usuarios Conectados"); DefaultTreeModel modelo = new
+		 * DefaultTreeModel(abuelo); JTree tree = new JTree(modelo);
+		 * 
+		 * DefaultMutableTreeNode usuario1 = new DefaultMutableTreeNode("Usuario 1");
+		 * DefaultMutableTreeNode hijoCon = new DefaultMutableTreeNode("15:00:00");
+		 * DefaultMutableTreeNode hijoEst = new
+		 * DefaultMutableTreeNode("Estado: Conectado"); DefaultMutableTreeNode usuario2
+		 * = new DefaultMutableTreeNode("Usuario 2"); DefaultMutableTreeNode hijoCon2 =
+		 * new DefaultMutableTreeNode("16:45:20"); DefaultMutableTreeNode hijoEst2 = new
+		 * DefaultMutableTreeNode("Estado: Desconectado");
+		 * 
+		 * modelo.insertNodeInto(usuario1, abuelo, 0); modelo.insertNodeInto(usuario2,
+		 * abuelo, 1); modelo.insertNodeInto(hijoCon, usuario1, 0);
+		 * modelo.insertNodeInto(hijoEst, usuario1, 1); modelo.insertNodeInto(hijoCon2,
+		 * usuario2, 0); modelo.insertNodeInto(hijoEst2, usuario2, 1);
+		 */
+		
+		izqPanel.add(usuariosActivos);
+		//izqPanel.add(scrollPaneUsuarios);
+		//izqPanel.add(tree);
 
 		derPanel.setLayout(new BoxLayout(derPanel, BoxLayout.Y_AXIS));
 		derPanel.add(scrollPane);
 		scrollPane.setViewportView(textArea);
 		derPanel.add(inputPanel);
-
+		
+		
+		scrollPaneUsuarios = new JScrollPane();
+		scrollPaneUsuarios.setEnabled(false);
+		scrollPaneUsuarios.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneUsuarios.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		izqPanel.add(scrollPaneUsuarios);
+		scrollPaneUsuarios.setViewportView(usuariosActivos);
+		
 		inputPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
 		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
 
@@ -201,7 +232,7 @@ public class VentanaChat extends JFrame {
 		inputPanel.add(btnEnviar);
 		inputPanel.add(btnExportar);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
 		pack();
