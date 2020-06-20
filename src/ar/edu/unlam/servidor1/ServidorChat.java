@@ -174,12 +174,12 @@ public class ServidorChat {
         System.out.println("mensaje procesado");
         Command comando = null;
         Long salaOrigenId = clientMessage.getSalaOrigenId();
-        Usuario userCreadorId = clientMessage.getUserCreadorId();
-        Usuario userDestinoId = clientMessage.getUserDestinoId();
+        Usuario userCreadorId = clientMessage.getUserCreador();
+        Usuario userDestinoId = clientMessage.getUserDestino();
         SalaChat salaChat = existeSalaConId(salaOrigenId);
 
         if(salaChat != null) {
-            if(clientMessage.getUserDestinoId() != null) {
+            if(clientMessage.getUserDestino() != null) {
                 if(usuariosInServer.contains(userDestinoId)) {
                     if(!salaChat.hasUser(userDestinoId)) {
                         comando = generarComandoError("El usuario al que se quiere enviar no esta en la sala.");

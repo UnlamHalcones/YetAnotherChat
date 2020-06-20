@@ -19,16 +19,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import ar.edu.unlam.entidades1.*;
 
@@ -79,23 +72,6 @@ public class VentanaChat extends JFrame {
 		textArea.setEditable(true);
 		textArea.setForeground(Color.RED);
 
-		textArea.addKeyListener(new KeyAdapter() {
-			// Este key adapter lo pongo para poder asiganrle texto al pane, pero qeu no se pueda moficar con teclado
-			@Override
-			public void keyTyped(KeyEvent e) {
-				// do nothing
-			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				//do nothing
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				//do nothing
-			}
-		});
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -221,15 +197,15 @@ public class VentanaChat extends JFrame {
 		String formatedDate = formatter.format(mensaje.getInstantCreacion());
 
 		Color messageColor = Color.BLACK;
-		String stringMessage = mensaje.getUserCreadorId().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
-		if(mensaje.getUserDestinoId() != null) {
+		String stringMessage = mensaje.getUserCreador().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
+		if(mensaje.getUserDestino() != null) {
 			messageColor = Color.RED;
-			if(mensaje.getUserCreadorId().equals(Cliente.getInstance().getUser())) {
-				stringMessage = mensaje.getUserDestinoId().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
+			if(mensaje.getUserCreador().equals(Cliente.getInstance().getUser())) {
+				stringMessage = mensaje.getUserDestino().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
 			}
 		}
 
-		appendToPane(stringMessage, mensaje.getUserDestinoId() != null ? Color.RED : Color.BLACK);
+		appendToPane(stringMessage, mensaje.getUserDestino() != null ? Color.RED : Color.BLACK);
 		btnExportar.setEnabled(true);
 	}
 
