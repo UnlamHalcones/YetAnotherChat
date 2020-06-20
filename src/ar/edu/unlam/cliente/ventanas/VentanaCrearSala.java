@@ -2,6 +2,8 @@ package ar.edu.unlam.cliente.ventanas;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -15,13 +17,17 @@ import ar.edu.unlam.entidades.SalaChat;
 import ar.edu.unlam.entidades.Usuario;
 
 public class VentanaCrearSala extends JDialog {
-
-	private static final long serialVersionUID = -5133533693845359439L;
+	
+	private static final long serialVersionUID = -2013488546574761682L;
 	private JTextField nombreDeLaSala;
 	private JTextField cantidadParticipantes;
 	private Usuario usuario;
 	private Cliente cliente;
 	private boolean actualiza;
+
+	public VentanaCrearSala() {
+		initialize();
+	}
 
 	public VentanaCrearSala(JFrame padre, Usuario usuario, Cliente cliente) {
 		super(padre, "Crear sala...", true);
@@ -47,11 +53,29 @@ public class VentanaCrearSala extends JDialog {
 		nombreDeLaSala = new JTextField();
 		nombreDeLaSala.setColumns(50);
 		nombreDeLaSala.setBounds(135, 24, 200, 20);
+		nombreDeLaSala.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (nombreDeLaSala.getText().length() > 29) {
+					e.consume();
+				}
+			}
+		});
 		this.getContentPane().add(nombreDeLaSala);
 
 		cantidadParticipantes = new JTextField();
 		cantidadParticipantes.setColumns(3);
 		cantidadParticipantes.setBounds(175, 55, 39, 20);
+		cantidadParticipantes.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (e.getKeyChar() < '0' || e.getKeyChar() > '9') {
+					e.consume();
+				} else if (cantidadParticipantes.getText().length() > 1) {
+					e.consume();
+				}
+			}
+		});
 		this.getContentPane().add(cantidadParticipantes);
 
 		JButton btnCrear = new JButton("Crear");
@@ -76,16 +100,25 @@ public class VentanaCrearSala extends JDialog {
 	}
 
 	private void crearSala() {
-		if (JOptionPane.showConfirmDialog(this, "Desea crear la sala", "Confirmar...", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.QUESTION_MESSAGE) == 0) {
-			int cantidad = Integer.parseInt(cantidadParticipantes.getText());
-			String mensaje = this.cliente.lobby.crearSala(new SalaChat(0, nombreDeLaSala.getText(), cantidad, this.usuario));
+		if (nombreDeLaSala.getText().length() == 0) {
+			JOptionPane.showConfirmDialog(this, "Debe ingresar el nombre de la sala.", "Atencion...",
+					JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
+		} else if (cantidadParticipantes.getText().length() == 0) {
+			JOptionPane.showConfirmDialog(this, "Debe definir la cantidad de participantes [1 a 99 participantes].",
+					"Atencion...", JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
+		} else if (Integer.parseInt(cantidadParticipantes.getText()) <= 0) {
+			JOptionPane.showConfirmDialog(this, "Debe definir la cantidad de participantes [1 a 99 participantes].",
+					"Atencion...", JOptionPane.CLOSED_OPTION, JOptionPane.WARNING_MESSAGE);
+		} else if (JOptionPane.showConfirmDialog(this, "Desea crear la sala", "Confirmar...",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
+			String mensaje = this.cliente.lobby.crearSala(new SalaChat(0, nombreDeLaSala.getText(),
+					Integer.parseInt(cantidadParticipantes.getText()), this.usuario));
 			if (mensaje.isEmpty()) {
 				this.actualiza = true;
 				cerrarVentana();
 			} else {
-				JOptionPane.showConfirmDialog(this, mensaje, "Atencion...", JOptionPane.OK_OPTION,
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showConfirmDialog(this, mensaje, "Atencion...", JOptionPane.CLOSED_OPTION,
+						JOptionPane.WARNING_MESSAGE);
 			}
 		}
 	}
