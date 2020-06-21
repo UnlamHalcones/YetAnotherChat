@@ -46,10 +46,6 @@ public class VentanaCrearSala extends JDialog {
 		lblNombreDeLaSala.setBounds(15, 24, 150, 14);
 		this.getContentPane().add(lblNombreDeLaSala);
 
-		JLabel lblCantidadDeParticipantes = new JLabel("Cantidad de participantes:");
-		lblCantidadDeParticipantes.setBounds(15, 55, 150, 14);
-		this.getContentPane().add(lblCantidadDeParticipantes);
-
 		nombreDeLaSala = new JTextField();
 		nombreDeLaSala.setColumns(50);
 		nombreDeLaSala.setBounds(135, 24, 200, 20);
@@ -62,21 +58,6 @@ public class VentanaCrearSala extends JDialog {
 			}
 		});
 		this.getContentPane().add(nombreDeLaSala);
-
-		cantidadParticipantes = new JTextField();
-		cantidadParticipantes.setColumns(3);
-		cantidadParticipantes.setBounds(175, 55, 39, 20);
-		cantidadParticipantes.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				if (e.getKeyChar() < '0' || e.getKeyChar() > '9') {
-					e.consume();
-				} else if (cantidadParticipantes.getText().length() > 1) {
-					e.consume();
-				}
-			}
-		});
-		this.getContentPane().add(cantidadParticipantes);
 
 		JButton btnCrear = new JButton("Crear");
 		btnCrear.setBounds(80, 88, 89, 23);
