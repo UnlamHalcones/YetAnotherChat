@@ -1,10 +1,10 @@
-package ar.edu.unlam.servidor1;
+package ar.edu.unlam.servidor;
 
 
-import ar.edu.unlam.entidades1.Command;
-import ar.edu.unlam.entidades1.CommandType;
-import ar.edu.unlam.entidades1.Mensaje;
-import ar.edu.unlam.entidades1.Usuario;
+import ar.edu.unlam.entidades.Command;
+import ar.edu.unlam.entidades.CommandType;
+import ar.edu.unlam.entidades.Mensaje;
+import ar.edu.unlam.entidades.Usuario;
 
 import java.io.*;
 import java.net.Socket;

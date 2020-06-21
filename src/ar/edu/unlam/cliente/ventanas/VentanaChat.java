@@ -26,10 +26,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Set;
 
 import ar.edu.unlam.cliente.archivos.ManejadorArchivos;
-import ar.edu.unlam.entidades1.*;
+import ar.edu.unlam.entidades.*;
 
 public class VentanaChat extends JFrame {
 

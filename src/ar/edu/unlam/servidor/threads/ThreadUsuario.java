@@ -1,10 +1,10 @@
-package ar.edu.unlam.servidor1.threads;
+package ar.edu.unlam.servidor.threads;
 
 
-import ar.edu.unlam.entidades1.Command;
-import ar.edu.unlam.entidades1.Mensaje;
-import ar.edu.unlam.entidades1.Usuario;
-import ar.edu.unlam.servidor1.ServidorChat;
+import ar.edu.unlam.entidades.Command;
+import ar.edu.unlam.entidades.Mensaje;
+import ar.edu.unlam.entidades.Usuario;
+import ar.edu.unlam.servidor.ServidorChat;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

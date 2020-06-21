@@ -12,9 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import ar.edu.unlam.entidades1.Cliente;
-import ar.edu.unlam.entidades1.SalaChat;
-import ar.edu.unlam.entidades1.Usuario;
+import ar.edu.unlam.entidades.Cliente;
+import ar.edu.unlam.entidades.Usuario;
 
 public class VentanaCrearSala extends JDialog {
 

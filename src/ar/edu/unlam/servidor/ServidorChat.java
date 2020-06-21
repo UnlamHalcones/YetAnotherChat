@@ -1,13 +1,11 @@
-package ar.edu.unlam.servidor1;
+package ar.edu.unlam.servidor;
 
-import ar.edu.unlam.entidades1.*;
-import ar.edu.unlam.servidor1.threads.ThreadUsuario;
+import ar.edu.unlam.entidades.*;
+import ar.edu.unlam.servidor.threads.ThreadUsuario;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.*;
 
 public class ServidorChat {

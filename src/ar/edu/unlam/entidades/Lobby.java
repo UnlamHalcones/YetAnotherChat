@@ -1,4 +1,4 @@
-package ar.edu.unlam.entidades1;
+package ar.edu.unlam.entidades;
 
 import java.util.ArrayList;
 import java.util.List;

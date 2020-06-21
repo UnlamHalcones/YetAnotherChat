@@ -1,10 +1,9 @@
-package ar.edu.unlam.entidades1;
+package ar.edu.unlam.entidades;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.List;
-import java.util.Set;
 
 public class ThreadCliente extends Thread {
 	private Socket socket;

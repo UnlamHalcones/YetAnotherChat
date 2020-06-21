@@ -1,9 +1,5 @@
-package ar.edu.unlam.entidades1;
-import java.time.Duration;
-import java.time.Instant;
+package ar.edu.unlam.entidades;
 import java.util.ArrayList;
-
-import ar.edu.unlam.cliente.ventanas.*;
 
 public class App {
 

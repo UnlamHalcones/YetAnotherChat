@@ -1,6 +1,6 @@
-package ar.edu.unlam.servidor1.graphics;
+package ar.edu.unlam.servidor.graphics;
 
-import ar.edu.unlam.servidor1.ServidorChat;
+import ar.edu.unlam.servidor.ServidorChat;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;

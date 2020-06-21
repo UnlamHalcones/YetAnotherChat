@@ -1,4 +1,4 @@
-package ar.edu.unlam.entidades1;
+package ar.edu.unlam.entidades;
 
 import ar.edu.unlam.cliente.archivos.ManejadorArchivos;
 import ar.edu.unlam.cliente.ventanas.VentanaChat;
@@ -8,9 +8,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Cliente extends Thread {
 

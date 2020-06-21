@@ -1,4 +1,4 @@
-package ar.edu.unlam.entidades1;
+package ar.edu.unlam.entidades;
 
 public enum CommandType {
     CREAR_SALA,

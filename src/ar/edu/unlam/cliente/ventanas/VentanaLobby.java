@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.*;
 
-import ar.edu.unlam.entidades1.*;
+import ar.edu.unlam.entidades.*;
 
 public class VentanaLobby extends JFrame {
 
@@ -62,6 +62,13 @@ public class VentanaLobby extends JFrame {
 		this.mostrarSalas();
 		this.setSize(335, 580);
 		this.setLocationRelativeTo(null);
+
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
 	}
 
 	public void mostrarSalas () {

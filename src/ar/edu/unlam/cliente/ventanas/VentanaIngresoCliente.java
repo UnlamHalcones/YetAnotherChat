@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import ar.edu.unlam.entidades1.*;
+import ar.edu.unlam.entidades.*;
 
 public class VentanaIngresoCliente extends JFrame {
 	 
