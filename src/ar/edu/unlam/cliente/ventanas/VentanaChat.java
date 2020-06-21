@@ -13,8 +13,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
@@ -45,7 +43,6 @@ public class VentanaChat extends JFrame {
 	private JTextField textField;
 	private JButton btnEnviar;
 	private JButton btnExportar;
-	// IngresoCliente cliente;
 	private JComboBox<String> usuariosConectados;
 	private SalaChat salaChat;
 	private Usuario usuarioSeleccionado;
@@ -57,11 +54,7 @@ public class VentanaChat extends JFrame {
 		this.salaChat = salaChat;
 		setTitle(salaChat.getNombreSala());
 		setBounds(100, 100, 500, 500);
-
-		String[] usuarios = { "Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan", "asd", "Unknown",
-				"Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan",
-				"Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown", "Jorge", "Juan", "Unknown" };
-
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -200,8 +193,6 @@ public class VentanaChat extends JFrame {
 		izqPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 1, 1));
 		izqPanel.setLayout(new BorderLayout(1, 2));
 
-		// usuariosActivos = new JList<String>(usuarios);
-
 		mostrarUsuariosEnSala();
 
 		usuariosActivos = new JList<Usuario>();
@@ -219,26 +210,7 @@ public class VentanaChat extends JFrame {
 		});
 		usuariosActivos.setModel(modUsuarios);
 
-		DefaultMutableTreeNode abuelo = new DefaultMutableTreeNode("Usuarios Conectados");
-		DefaultTreeModel modelo = new DefaultTreeModel(abuelo);
-		JTree tree = new JTree(modelo);
-
-		DefaultMutableTreeNode usuario1 = new DefaultMutableTreeNode("Usuario 1");
-		DefaultMutableTreeNode hijoCon = new DefaultMutableTreeNode("15:00:00");
-		DefaultMutableTreeNode hijoEst = new DefaultMutableTreeNode("Estado: Conectado");
-		DefaultMutableTreeNode usuario2 = new DefaultMutableTreeNode("Usuario 2");
-		DefaultMutableTreeNode hijoCon2 = new DefaultMutableTreeNode("16:45:20");
-		DefaultMutableTreeNode hijoEst2 = new DefaultMutableTreeNode("Estado: Desconectado");
-
-		modelo.insertNodeInto(usuario1, abuelo, 0);
-		modelo.insertNodeInto(usuario2, abuelo, 1);
-		modelo.insertNodeInto(hijoCon, usuario1, 0);
-		modelo.insertNodeInto(hijoEst, usuario1, 1);
-		modelo.insertNodeInto(hijoCon2, usuario2, 0);
-		modelo.insertNodeInto(hijoEst2, usuario2, 1);
-
 		izqPanel.add(usuariosActivos);
-		// izqPanel.add(tree);
 
 		usuariosActivos.setPreferredSize(izqPanel.getMinimumSize());
 
@@ -304,7 +276,7 @@ public class VentanaChat extends JFrame {
 		textField.requestFocus();
 		textField.setSelectionStart(0);
 		textField.setSelectionEnd(textField.getText().length());
-
+		textField.setText("");
 	}
 
 	public SalaChat getSalaChat() {

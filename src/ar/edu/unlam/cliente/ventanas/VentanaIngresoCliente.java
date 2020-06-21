@@ -11,11 +11,9 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -36,7 +34,6 @@ public class VentanaIngresoCliente extends JFrame {
 
 	        JPanel panel = new JPanel(new GridBagLayout());
 	        GridBagConstraints cs = new GridBagConstraints();
-	        //IngresoCliente ingCli = new IngresoCliente();
 	 
 	        cs.fill = GridBagConstraints.HORIZONTAL;
 	 
@@ -58,7 +55,6 @@ public class VentanaIngresoCliente extends JFrame {
 				public void keyPressed(KeyEvent e) {
 
 					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-						//IngresoCliente(ingCli);
 		            	IngresoCliente();
 					}
 					
@@ -86,7 +82,6 @@ public class VentanaIngresoCliente extends JFrame {
 				public void keyPressed(KeyEvent e) {
 
 					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-						//IngresoCliente(ingCli);
 		            	IngresoCliente();
 					}
 					
@@ -114,7 +109,6 @@ public class VentanaIngresoCliente extends JFrame {
 				public void keyPressed(KeyEvent e) {
 
 					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-						//IngresoCliente(ingCli);
 		            	IngresoCliente();
 					}
 					
@@ -125,11 +119,9 @@ public class VentanaIngresoCliente extends JFrame {
 			});
 	        
 	        btnLogin = new JButton("Login");
-	 
 	        btnLogin.addActionListener(new ActionListener() {
 	 
 	            public void actionPerformed(ActionEvent e) {
-	            	//IngresoCliente(ingCli);
 	            	IngresoCliente();
 	            }
 	        });
@@ -141,29 +133,26 @@ public class VentanaIngresoCliente extends JFrame {
 	                dispose();
 	            }
 	        });
-	        JPanel bp = new JPanel();
-	        bp.add(btnLogin);
-	        bp.add(btnCancel);
 	 
+	        JPanel bp = new JPanel();
+
 	        getContentPane().add(panel, BorderLayout.CENTER);
 	        getContentPane().add(bp, BorderLayout.PAGE_END);
 	 
 	        pack();
-	        
-	        this.add(btnLogin);
+
 	        this.setSize(250, 150);
 	        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        this.setLayout(new FlowLayout());
 	        this.setLocationRelativeTo(null);
 	        this.getContentPane().add(btnLogin);
+	        this.add(btnCancel);
 	        this.setResizable(false);
 	        this.setVisible(true);
 	        panel.setFocusable(true);	      
 	    }
 	    
 	    public void IngresoCliente() {
-	    //public void IngresoCliente(IngresoCliente ingCli) {
-	    	JDialog ld= new JDialog();
 	    		try {
 					Cliente client = Cliente.getInstance();
 					client.init( tfIp.getText(), Integer.valueOf(ftfPuerto.getText()), tfUsername.getText());
@@ -177,13 +166,6 @@ public class VentanaIngresoCliente extends JFrame {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	    			
-	    		//ingCli = new IngresoCliente(tfUsername.getText(), tfIp.getText(), Integer.valueOf(ftfPuerto.getText()));
-                /*JOptionPane.showMessageDialog(ld,
-                        //"Bienvenido " + ingCli.getUserName() + "!",
-                		"Bienvenido " +  "!",
-                        "Login",
-                        JOptionPane.INFORMATION_MESSAGE);*/
                 dispose();
 	    }
 	    
