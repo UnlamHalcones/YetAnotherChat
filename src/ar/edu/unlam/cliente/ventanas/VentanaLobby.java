@@ -3,6 +3,8 @@ package ar.edu.unlam.cliente.ventanas;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ public class VentanaLobby extends JFrame {
 	private List<VentanaChat> ventanasChat;
 
 	public VentanaLobby(Usuario usuario) {
-		
+
 		super();
 		System.out.println("construyo");
 		this.usuario = usuario;
@@ -40,11 +42,8 @@ public class VentanaLobby extends JFrame {
 		initialize();
 	}
 
-	public List<VentanaChat> getVentanasChat() {
-		return ventanasChat;
-	}
 
-	private void initialize() {
+	private void initialize () {
 		this.setResizable(false);
 		this.setTitle("Lobby. Usuario: " + this.usuario.getUserName());
 		JMenuBar jMenuBar = new JMenuBar();
@@ -66,7 +65,7 @@ public class VentanaLobby extends JFrame {
 		this.setLocationRelativeTo(null);
 	}
 
-	public void mostrarSalas() {
+	public void mostrarSalas () {
 		JButton btnSala;
 		JLabel etiqueta;
 		JPanel panel;
@@ -131,36 +130,37 @@ public class VentanaLobby extends JFrame {
 		this.setContentPane(this.contentPane);
 	}
 
-	private void crearSala() {
+	private void crearSala () {
 		new VentanaCrearSala(this, this.usuario);
 	}
 
-	private void unirseAUnaSala(Long salaId) {
+	private void unirseAUnaSala (Long salaId){
 		if (JOptionPane.showConfirmDialog(this, "Desea unirse a la sala", "Confirmar...", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE) == 0) {
 			Cliente.getInstance().unirseASala(salaId);
 		}
 	}
 
-	public void actualizarSalas(List<SalaChat> salasChat) {
+	public void actualizarSalas (List < SalaChat > salasChat) {
 		this.lobby.setSalas(salasChat);
 		this.mostrarSalas();
 	}
 
-	public void mostrarVentanaError(String errorMessage) {
+	public void mostrarVentanaError (String errorMessage){
 		JOptionPane.showConfirmDialog(this, errorMessage, "Error", JOptionPane.CLOSED_OPTION,
 				JOptionPane.ERROR_MESSAGE);
 	}
 
-	public void crearVentanaChat(SalaChat salaChat) {
+	public void crearVentanaChat (SalaChat salaChat){
 		VentanaChat ventanaChat = new VentanaChat(salaChat);
+
 		ventanaChat.setVisible(true);
 		this.ventanasChat.add(ventanaChat);
-		
+
 		System.out.println("Tengo " + this.ventanasChat.size() + " ventanasChat en crearVentanaChat");
 	}
 
-	public void actualizarMensajes(Mensaje clientMessage) {
+	public void actualizarMensajes (Mensaje clientMessage){
 		Long salaOrigenId = clientMessage.getSalaOrigenId();
 		SalaChat salaById = this.lobby.getSalaById(salaOrigenId);
 		List<VentanaChat> ventanasDeChatAActualizar = this.ventanasChat.stream()
@@ -170,10 +170,19 @@ public class VentanaLobby extends JFrame {
 	}
 
 
-	public VentanaChat getVentanaPorSalaChat(SalaChat salaChat) {
+	public VentanaChat getVentanaPorSalaChat (SalaChat salaChat){
 		System.out.println("Tengo " + this.ventanasChat.size() + " ventanasChat en getVentanaPorSalaChat");
-		
+
 		return this.ventanasChat.stream().filter(ventana -> ventana.getSalaChat().getId().equals(salaChat.getId()))
 				.findAny().orElse(null);
 	}
+
+	public void removerVentanaChat(Long salaId) {
+		VentanaChat ventanaARemover = this.ventanasChat.stream()
+				.filter(ventanaChat -> ventanaChat.getSalaChat().getId().equals(salaId))
+				.findAny()
+				.orElse(null);
+		this.ventanasChat.remove(ventanaARemover);
+	}
 }
+

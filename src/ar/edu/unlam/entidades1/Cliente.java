@@ -111,6 +111,13 @@ public class Cliente extends Thread {
 		this.sendCommand(unirseASala);
 	}
 
+	public void salirDeSala(Long salaId) {
+		System.out.println("Voy a pedir salir de sala id: " + salaId.toString());
+		Command unirseASala = new Command(CommandType.SALIR_SALA, salaId);
+		ventanaLobby.removerVentanaChat(salaId);
+		this.sendCommand(unirseASala);
+	}
+
 	private void sendCommand(Command command) {
 		try {
 			objectOutputStream.reset();
@@ -167,7 +174,7 @@ public class Cliente extends Thread {
 		VentanaChat ventanaChat = this.ventanaLobby.getVentanaPorSalaChat(sala);
 
 		if (ventanaChat != null) {
-			ventanaChat.actualizarUsuarios(sala.getUsuariosInSala());
+			ventanaChat.actualizarUsuarios(sala);
 		}else
 		{
 			System.out.println("Tengo que actualizar usuarios pero no encontre la ventana");

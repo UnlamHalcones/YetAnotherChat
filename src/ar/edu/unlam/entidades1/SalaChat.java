@@ -114,6 +114,9 @@ public class SalaChat implements Serializable {
         return this.usuariosInSala.contains(usuario);
     }
 
+    public boolean hasUsersConnected() {
+        return !this.usuariosInSala.isEmpty();
+    }
     public boolean agregarMensaje(Mensaje mensaje) {
         return this.mensajes.add(mensaje);
     }

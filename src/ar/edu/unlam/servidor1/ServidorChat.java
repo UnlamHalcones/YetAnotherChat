@@ -142,6 +142,7 @@ public class ServidorChat {
                 } else {
                     salaChat.addUsuario(usuario);
                     usuario.aumentarCantSalasConectadas();
+                    notificarUsuariosDeSala(salaChat);
                     comando = new Command(CommandType.UNIRSE_SALA, salaChat);
                 }
             } else {
@@ -173,9 +174,11 @@ public class ServidorChat {
             if(salaChat.hasUser(usuario)) {
                 salaChat.removeUsuario(usuario);
                 comando = new Command(CommandType.SALIR_SALA, salaChat);
-		notificarUsuariosDeSala(salaChat);
+		        notificarUsuariosDeSala(salaChat);
                 // Si la sala quedo vacía la elimino
-                this.salasInServer.remove(salaChat);
+                if(!salaChat.hasUsersConnected()) {
+                    this.salasInServer.remove(salaChat);
+                }
                 new Thread(() -> {
                     this.broadcast(getInformacionSalas());
                 }).start();

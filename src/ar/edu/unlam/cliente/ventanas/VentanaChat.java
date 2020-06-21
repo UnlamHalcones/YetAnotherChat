@@ -46,8 +46,8 @@ public class VentanaChat extends JFrame {
 	private JComboBox<String> usuariosConectados;
 	private SalaChat salaChat;
 	private Usuario usuarioSeleccionado;
-	private JList<Usuario> usuariosActivos;
-	private DefaultListModel modUsuarios;
+	private JList<String> usuariosActivos;
+	private DefaultListModel<String> modUsuarios;
 	private HashMap<Long, Instant> tiempoConexionUsuario;
 
 	public VentanaChat(SalaChat salaChat) {
@@ -58,10 +58,11 @@ public class VentanaChat extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				int confirm = JOptionPane.showOptionDialog(splitPane, "¿Esta seguro que desea salir de la sala?",
+				int confirm = JOptionPane.showOptionDialog(splitPane, "ï¿½Esta seguro que desea salir de la sala?",
 						"Salir de sala", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 				if (confirm == JOptionPane.YES_OPTION) {
 					// Desconectar del servidor
+					Cliente.getInstance().salirDeSala(salaChat.getId());
 					setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				} else {
 					setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -160,26 +161,8 @@ public class VentanaChat extends JFrame {
 		btnEnviar.setToolTipText("Click para enviar mensaje");
 		btnExportar.setToolTipText("Click para exportar el Chat");
 
-		usuariosConectados = new JComboBox<String>();
-		usuariosConectados.addItem("Todos");
-		salaChat.getUsuariosInSala().forEach(usuario -> {
-			usuariosConectados.addItem(usuario.getUserName());
-		});
+		crearComboUsuarios(salaChat);
 
-		usuariosConectados.setSelectedItem("Todos");
-		usuariosConectados.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Actualizo a quien le quiero mandar el mensaje
-				usuarioSeleccionado = null;
-				String selectedItem = (String) usuariosConectados.getSelectedItem();
-				if (selectedItem != null && !selectedItem.equalsIgnoreCase("Todos")) {
-					Usuario usuarioByUserName = salaChat.getUsuarioByUserName(selectedItem);
-					if (usuarioByUserName != null) {
-						usuarioSeleccionado = usuarioByUserName;
-					}
-				}
-			}
-		});
 
 		setPreferredSize(new Dimension(600, 500));
 		getContentPane().setLayout(new GridLayout());
@@ -193,10 +176,8 @@ public class VentanaChat extends JFrame {
 		izqPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 1, 1));
 		izqPanel.setLayout(new BorderLayout(1, 2));
 
-		mostrarUsuariosEnSala();
-
-		usuariosActivos = new JList<Usuario>();
-		modUsuarios = new DefaultListModel<Usuario>();
+		usuariosActivos = new JList<String>();
+		modUsuarios = new DefaultListModel<String>();
 		tiempoConexionUsuario = new HashMap<>();
 		SimpleDateFormat formato = new SimpleDateFormat("HH:mm:ss");
 
@@ -237,6 +218,32 @@ public class VentanaChat extends JFrame {
 		setLocationRelativeTo(null);
 
 		pack();
+	}
+
+	private void crearComboUsuarios(SalaChat salaChat) {
+		usuariosConectados = new JComboBox<String>();
+		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+		model.removeAllElements();
+
+		model.addElement("Todos");
+		salaChat.getUsuariosInSala().forEach(usuario -> {
+			model.addElement(usuario.getUserName());
+		});
+		usuariosConectados.setModel(model);
+		usuariosConectados.setSelectedItem("Todos");
+		usuariosConectados.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Actualizo a quien le quiero mandar el mensaje
+				usuarioSeleccionado = null;
+				String selectedItem = (String) usuariosConectados.getSelectedItem();
+				if(selectedItem != null && !selectedItem.equalsIgnoreCase("Todos")) {
+					Usuario usuarioByUserName = salaChat.getUsuarioByUserName(selectedItem);
+					if(usuarioByUserName != null) {
+						usuarioSeleccionado = usuarioByUserName;
+					}
+				}
+			}
+		});
 	}
 
 	private void agregarMensajeTextAreaLocal(Mensaje mensaje) {
@@ -291,17 +298,33 @@ public class VentanaChat extends JFrame {
 		this.agregarMensajeTextAreaLocal(clientMessage);
 	}
 
-	public void actualizarUsuarios(Set<Usuario> usuariosInSala) {
-		this.salaChat.setUsuariosInSala(usuariosInSala);
+	public void actualizarUsuarios(SalaChat salaChat) {
+		this.salaChat = salaChat;
 
-		this.mostrarUsuariosEnSala();
-	}
+		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+		model.removeAllElements();
 
-	private void mostrarUsuariosEnSala() {
-		System.out.println("Actualizo los usuarios en la sala");
-		for (Usuario usuario : salaChat.getUsuariosInSala()) {
-			System.out.println(usuario.getUserName() + " esta en la sala");
-		}
+		model.addElement("Todos");
+		salaChat.getUsuariosInSala().forEach(usuario -> {
+			model.addElement(usuario.getUserName());
+		});
+		usuariosConectados.setModel(model);
+		usuariosConectados.setSelectedItem("Todos");
 
+
+		DefaultListModel<String> usuarioDefaultListModel = new DefaultListModel<>();
+		usuarioDefaultListModel.removeAllElements();
+		tiempoConexionUsuario = new HashMap<>();
+		SimpleDateFormat formato = new SimpleDateFormat("HH:mm:ss");
+
+		tiempoConexionUsuario = salaChat.getTiempoConexionUsuario();
+
+		salaChat.getUsuariosInSala().forEach(usuario -> {
+			if (tiempoConexionUsuario.containsKey(usuario.getId())) {
+				usuarioDefaultListModel.addElement(usuario.getUserName() + " "
+						+ formato.format(Date.from(tiempoConexionUsuario.get(usuario.getId()))));
+			}
+		});
+		usuariosActivos.setModel(usuarioDefaultListModel);
 	}
 }
