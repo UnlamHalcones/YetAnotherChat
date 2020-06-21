@@ -50,9 +50,9 @@ public class VentanaChat extends JFrame {
 	private DefaultListModel<String> modUsuarios;
 	private HashMap<Long, Instant> tiempoConexionUsuario;
 
-	public VentanaChat(SalaChat salaChat) {
-		this.salaChat = salaChat;
-		setTitle(salaChat.getNombreSala());
+	public VentanaChat(SalaChat salaChatParam) {
+		this.salaChat = salaChatParam;
+		setTitle(salaChatParam.getNombreSala());
 		setBounds(100, 100, 500, 500);
 		
 		addWindowListener(new WindowAdapter() {
@@ -62,7 +62,7 @@ public class VentanaChat extends JFrame {
 						"Salir de sala", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 				if (confirm == JOptionPane.YES_OPTION) {
 					// Desconectar del servidor
-					Cliente.getInstance().salirDeSala(salaChat.getId());
+					Cliente.getInstance().salirDeSala(salaChatParam.getId());
 					setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				} else {
 					setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -100,12 +100,7 @@ public class VentanaChat extends JFrame {
 			public void keyPressed(KeyEvent arg0) {
 				// TODO HACER EL ENVIO DE UN MENSAJE
 				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-					String mensaje = textField.getText();
-					if (usuarioSeleccionado == null) {
-						Cliente.getInstance().enviarMensaje(salaChat, mensaje);
-					} else {
-						Cliente.getInstance().enviarMensaje(usuarioSeleccionado, salaChat, mensaje);
-					}
+					mandarMensaje();
 //				agregarTextoTextAreaLocal(mensaje + "\n");
 					selectAllTextoTextField(textField);
 				}
@@ -128,12 +123,7 @@ public class VentanaChat extends JFrame {
 
 		btnEnviar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String mensaje = textField.getText();
-				if (usuarioSeleccionado == null) {
-					Cliente.getInstance().enviarMensaje(salaChat, mensaje);
-				} else {
-					Cliente.getInstance().enviarMensaje(usuarioSeleccionado, salaChat, mensaje);
-				}
+				mandarMensaje();
 //				agregarTextoTextAreaLocal(mensaje + "\n");
 				selectAllTextoTextField(textField);
 			}
@@ -151,7 +141,7 @@ public class VentanaChat extends JFrame {
 
 				if (jFileChooser.showOpenDialog(btnExportar) == JFileChooser.APPROVE_OPTION) {
 					ManejadorArchivos.rootPath = jFileChooser.getSelectedFile().getAbsolutePath();
-					Cliente.getInstance().solicitarLog(salaChat.getId());
+					Cliente.getInstance().solicitarLog(salaChatParam.getId());
 				}
 			}
 		});
@@ -161,7 +151,7 @@ public class VentanaChat extends JFrame {
 		btnEnviar.setToolTipText("Click para enviar mensaje");
 		btnExportar.setToolTipText("Click para exportar el Chat");
 
-		crearComboUsuarios(salaChat);
+		crearComboUsuarios(salaChatParam);
 
 
 		setPreferredSize(new Dimension(600, 500));
@@ -181,9 +171,9 @@ public class VentanaChat extends JFrame {
 		tiempoConexionUsuario = new HashMap<>();
 		SimpleDateFormat formato = new SimpleDateFormat("HH:mm:ss");
 
-		tiempoConexionUsuario = salaChat.getTiempoConexionUsuario();
+		tiempoConexionUsuario = salaChatParam.getTiempoConexionUsuario();
 
-		salaChat.getUsuariosInSala().forEach(usuario -> {
+		salaChatParam.getUsuariosInSala().forEach(usuario -> {
 			if (tiempoConexionUsuario.containsKey(usuario.getId())) {
 				modUsuarios.addElement(usuario.getUserName() + " "
 						+ formato.format(Date.from(tiempoConexionUsuario.get(usuario.getId()))));
@@ -220,6 +210,19 @@ public class VentanaChat extends JFrame {
 		pack();
 	}
 
+	private void mandarMensaje() {
+		String mensaje = textField.getText();
+		String selectedItem = (String) usuariosConectados.getSelectedItem();
+		if(selectedItem != null && !selectedItem.equalsIgnoreCase("Todos")) {
+			Usuario usuarioByUserName = this.salaChat.getUsuarioByUserName(selectedItem);
+			if(usuarioByUserName != null) {
+				Cliente.getInstance().enviarMensaje(usuarioByUserName, this.salaChat, mensaje);
+			}
+		} else {
+			Cliente.getInstance().enviarMensaje(this.salaChat, mensaje);
+		}
+	}
+
 	private void crearComboUsuarios(SalaChat salaChat) {
 		usuariosConectados = new JComboBox<String>();
 		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
@@ -227,42 +230,28 @@ public class VentanaChat extends JFrame {
 
 		model.addElement("Todos");
 		salaChat.getUsuariosInSala().forEach(usuario -> {
-			model.addElement(usuario.getUserName());
+			if(!usuario.getUserName().equalsIgnoreCase(Cliente.getInstance().getUser().getUserName())) {
+				model.addElement(usuario.getUserName());
+			}
 		});
 		usuariosConectados.setModel(model);
 		usuariosConectados.setSelectedItem("Todos");
-		usuariosConectados.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Actualizo a quien le quiero mandar el mensaje
-				usuarioSeleccionado = null;
-				String selectedItem = (String) usuariosConectados.getSelectedItem();
-				if(selectedItem != null && !selectedItem.equalsIgnoreCase("Todos")) {
-					Usuario usuarioByUserName = salaChat.getUsuarioByUserName(selectedItem);
-					if(usuarioByUserName != null) {
-						usuarioSeleccionado = usuarioByUserName;
-					}
-				}
-			}
-		});
 	}
 
 	private void agregarMensajeTextAreaLocal(Mensaje mensaje) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-				.withZone(ZoneId.systemDefault());
+		DateTimeFormatter formatter =
+				DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
+						.withZone( ZoneId.systemDefault() );
 		String formatedDate = formatter.format(mensaje.getInstantCreacion());
 
 		Color messageColor = Color.BLACK;
-		String stringMessage = mensaje.getUserCreador().getUserName() + "(" + formatedDate + ") : " + mensaje.getData()
-				+ "\n";
-		if (mensaje.getUserDestino() != null) {
+		String stringMessage = mensaje.getUserCreador().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
+		if(mensaje.getUserDestino() != null) {
 			messageColor = Color.RED;
-			if (mensaje.getUserCreador().equals(Cliente.getInstance().getUser())) {
-				stringMessage = mensaje.getUserDestino().getUserName() + "(" + formatedDate + ") : " + mensaje.getData()
-						+ "\n";
-			}
+			stringMessage = mensaje.getUserCreador().getUserName() + " -> " + mensaje.getUserDestino().getUserName() + "(" + formatedDate + ") : " + mensaje.getData() + "\n";
 		}
 
-		appendToPane(stringMessage, mensaje.getUserDestino() != null ? Color.RED : Color.BLACK);
+		appendToPane(stringMessage, messageColor);
 		btnExportar.setEnabled(true);
 	}
 
@@ -305,21 +294,22 @@ public class VentanaChat extends JFrame {
 		model.removeAllElements();
 
 		model.addElement("Todos");
-		salaChat.getUsuariosInSala().forEach(usuario -> {
-			model.addElement(usuario.getUserName());
+		this.salaChat.getUsuariosInSala().forEach(usuario -> {
+			if(!usuario.getUserName().equalsIgnoreCase(Cliente.getInstance().getUser().getUserName())) {
+				model.addElement(usuario.getUserName());
+			}
 		});
 		usuariosConectados.setModel(model);
 		usuariosConectados.setSelectedItem("Todos");
-
 
 		DefaultListModel<String> usuarioDefaultListModel = new DefaultListModel<>();
 		usuarioDefaultListModel.removeAllElements();
 		tiempoConexionUsuario = new HashMap<>();
 		SimpleDateFormat formato = new SimpleDateFormat("HH:mm:ss");
 
-		tiempoConexionUsuario = salaChat.getTiempoConexionUsuario();
+		tiempoConexionUsuario = this.salaChat.getTiempoConexionUsuario();
 
-		salaChat.getUsuariosInSala().forEach(usuario -> {
+		this.salaChat.getUsuariosInSala().forEach(usuario -> {
 			if (tiempoConexionUsuario.containsKey(usuario.getId())) {
 				usuarioDefaultListModel.addElement(usuario.getUserName() + " "
 						+ formato.format(Date.from(tiempoConexionUsuario.get(usuario.getId()))));

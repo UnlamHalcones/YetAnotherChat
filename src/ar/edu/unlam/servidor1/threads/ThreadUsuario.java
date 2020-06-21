@@ -49,7 +49,6 @@ public class ThreadUsuario extends Thread {
 						break;
 
 					case MENSAJE:
-						System.out.println("Mensaje recibido");
 						Mensaje clientMessage = (Mensaje) command.getInfo();
 						command = server.procesarMensaje(clientMessage);
 						break;
@@ -80,7 +79,6 @@ public class ThreadUsuario extends Thread {
 				command = (Command) objectInputStream.readObject();
 			}
 		} catch (IOException | ClassNotFoundException ex) {
-			System.out.println("Error in ThreadUsuario: " + ex.getMessage());
 			ex.printStackTrace();
 		}
 	}

@@ -29,7 +29,6 @@ public class VentanaLobby extends JFrame {
 	public VentanaLobby(Usuario usuario) {
 
 		super();
-		System.out.println("construyo");
 		this.usuario = usuario;
 		this.panel = new JPanel();
 		this.scrollPane = new JScrollPane();
@@ -70,8 +69,6 @@ public class VentanaLobby extends JFrame {
 		JLabel etiqueta;
 		JPanel panel;
 		JScrollPane scrollPane;
-
-		System.out.println("Tengo " + this.lobby.getSalas().size() + " salas.");
 
 		etiqueta = new JLabel("Sala de chats disponibles:");
 		etiqueta.setBounds(10, 10, 200, 15);
@@ -156,8 +153,6 @@ public class VentanaLobby extends JFrame {
 
 		ventanaChat.setVisible(true);
 		this.ventanasChat.add(ventanaChat);
-
-		System.out.println("Tengo " + this.ventanasChat.size() + " ventanasChat en crearVentanaChat");
 	}
 
 	public void actualizarMensajes (Mensaje clientMessage){
@@ -171,8 +166,6 @@ public class VentanaLobby extends JFrame {
 
 
 	public VentanaChat getVentanaPorSalaChat (SalaChat salaChat){
-		System.out.println("Tengo " + this.ventanasChat.size() + " ventanasChat en getVentanaPorSalaChat");
-
 		return this.ventanasChat.stream().filter(ventana -> ventana.getSalaChat().getId().equals(salaChat.getId()))
 				.findAny().orElse(null);
 	}

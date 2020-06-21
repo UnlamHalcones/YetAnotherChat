@@ -44,7 +44,6 @@ public class ClientePrueba extends Thread {
                     objectOutputStream.writeObject(mensaje1);
                     objectOutputStream.reset();
                     closeConnections(socket, readerFromKB);
-                    System.out.println("disconnect from server");
                     System.exit(0);
                 } catch (IOException e) {
                     System.err.println("Error con el servidor." + e.getMessage());
@@ -62,7 +61,6 @@ public class ClientePrueba extends Thread {
                         }
                         
                         Mensaje serverMessage = (Mensaje)command1.getInfo();
-                        System.out.println(serverMessage);
                     } catch (IOException | ClassNotFoundException e) {
                         System.err.println("Error con el servidor." + e.getMessage());
                     }

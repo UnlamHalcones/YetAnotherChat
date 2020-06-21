@@ -27,7 +27,6 @@ public class ServidorChat {
 	public void execute() {
 		try {
 			serverSocket = new ServerSocket(port);
-			System.out.println("Chat Server is listening on port " + port);
 			while (!serverSocket.isClosed()) {
 				// Acepto conexion
 				Socket socket = serverSocket.accept();
@@ -44,7 +43,6 @@ public class ServidorChat {
                 if(!existeUserWithNickName(userNickName)) {
                     Usuario newUser = new Usuario(Long.valueOf(usuariosInServer.size()), userNickName);
                     usuariosInServer.add(newUser);
-                    System.out.println("User: " + userNickName + " connected");
 
                     command = new Command(CommandType.USER, newUser);
 
@@ -61,7 +59,6 @@ public class ServidorChat {
 
             }
         } catch (IOException | ClassNotFoundException ex) {
-            System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -100,7 +97,6 @@ public class ServidorChat {
         boolean isRemoved = this.usuariosInServer.remove(user);
         if(isRemoved) {
             userThreads.remove(aUser);
-            System.out.println("The user " + user + " quitted");
         }
     }
 
@@ -154,10 +150,8 @@ public class ServidorChat {
 
 	public void notificarUsuariosDeSala(SalaChat salaChat) {
 		Command usuariosEnSalaCommand = new Command(CommandType.USUARIOS_SALA, salaChat);
-		System.out.println("Estoy avisando que hay que actualizar usuarios en sala");
-		
+
 		for (Usuario user : salaChat.getUsuariosInSala()) {
-			System.out.println("Le aviso a " + user.getUserName() + " que para la salaID "+ salaChat.getId() + " tiene que tener " + salaChat.getUsuariosInSala().size() + " conectados");
 			sendCommandTo(user, usuariosEnSalaCommand);
 		}
 	}
@@ -192,7 +186,6 @@ public class ServidorChat {
     }
 
     public Command procesarMensaje(Mensaje clientMessage) {
-        System.out.println("mensaje procesado");
         Command comando = null;
         Long salaOrigenId = clientMessage.getSalaOrigenId();
         Usuario userCreadorId = clientMessage.getUserCreador();
@@ -269,7 +262,6 @@ public class ServidorChat {
 		}
     	log+= "\n";
     	
-    	System.out.println(new String(log.getBytes()));
     	return new Command(CommandType.EXPORT_LOG,log.getBytes());
     }
 

@@ -79,19 +79,16 @@ public class Cliente extends Thread {
 	}
 
 	public void getSalas() {
-		System.out.println("Voy a pedir salas");
 		Command getSalasCommand = new Command(CommandType.INFO_SALAS, null);
 		this.sendCommand(getSalasCommand);
 	}
 
 	public void crearSalaEnServer(String nombreSala) {
-		System.out.println("Voy a pedir crear sala");
 		Command crearSalaCommand = new Command(CommandType.CREAR_SALA, nombreSala);
 		this.sendCommand(crearSalaCommand);
 	}
 
 	public void actualizarSalas(List<SalaChat> salasChat) {
-		System.out.println("Soy " + user.getUserName() + " y me mandaron a actualizar salas.");
 		this.ventanaLobby.actualizarSalas(salasChat);
 	}
 
@@ -106,13 +103,11 @@ public class Cliente extends Thread {
 	}
 
 	public void unirseASala(Long salaId) {
-		System.out.println("Voy a pedir unirme a sala id: " + salaId.toString());
 		Command unirseASala = new Command(CommandType.UNIRSE_SALA, salaId);
 		this.sendCommand(unirseASala);
 	}
 
 	public void salirDeSala(Long salaId) {
-		System.out.println("Voy a pedir salir de sala id: " + salaId.toString());
 		Command unirseASala = new Command(CommandType.SALIR_SALA, salaId);
 		ventanaLobby.removerVentanaChat(salaId);
 		this.sendCommand(unirseASala);
@@ -137,14 +132,12 @@ public class Cliente extends Thread {
 	}
 
 	public void enviarMensaje(Usuario usuarioSeleccionado, SalaChat salaChat, String mensaje) {
-		System.out.println("Enviando mensae desde cleinte");
 		Mensaje clientMessage = new Mensaje(this.user, usuarioSeleccionado, salaChat.getId(), mensaje);
 		Command command = new Command(CommandType.MENSAJE, clientMessage);
 		this.sendCommand(command);
 	}
 
 	public void enviarMensaje(SalaChat salaChat, String mensaje) {
-		System.out.println("Enviando mensae desde cleinte");
 		Mensaje clientMessage = new Mensaje(this.user, salaChat.getId(), mensaje);
 		Command command = new Command(CommandType.MENSAJE, clientMessage);
 		this.sendCommand(command);
@@ -177,7 +170,6 @@ public class Cliente extends Thread {
 			ventanaChat.actualizarUsuarios(sala);
 		}else
 		{
-			System.out.println("Tengo que actualizar usuarios pero no encontre la ventana");
 		}
 		
 	}
