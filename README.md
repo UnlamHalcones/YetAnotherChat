@@ -46,7 +46,13 @@ Por ejemplo, cuando desde el cliente pedimos que queremos crear una sala, mandam
 
 Luego el servidor va a crear la sala (luego de hacer las validaciones), responder que se creó la sala, y va a enviar un nuevo Command a todos los clientes conectados con el CommandType INFO_SALA y un Object info con todas las Salas de chat que tiene el server
 
+## Mejoras Pendientes
+Nos quedaron mejoras a futuro a hacer, que por temas de tiempo no pudimos
 
+- No tenemos test realizados en la aplicación
+- No pusimos iconos en las ventanas y varias cuestiones de diseño de los formularios
+- Al cerrar la ventana del cliente no se esta desconectando el hilo del server para es cliente. De todos modos el server sigue funcionando 
+- Al mismo tiempo, desde el cliente no estamos contemplandosi se cae el server o si no está conectado al momento de que se conecta
 
 ## Autores
 * Nicolas Carlos Cailotto
